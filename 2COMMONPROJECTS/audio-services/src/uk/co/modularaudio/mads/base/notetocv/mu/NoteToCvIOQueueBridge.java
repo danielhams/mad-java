@@ -41,7 +41,10 @@ public class NoteToCvIOQueueBridge extends MadLocklessQueueBridge<NoteToCvMadIns
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final NoteToCvMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final NoteToCvMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

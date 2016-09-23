@@ -46,7 +46,10 @@ public class CvSurfaceIOQueueBridge extends MadLocklessQueueBridge<CvSurfaceMadI
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final CvSurfaceMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final CvSurfaceMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage ses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

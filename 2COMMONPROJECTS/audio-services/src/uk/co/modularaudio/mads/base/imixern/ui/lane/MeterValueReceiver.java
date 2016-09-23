@@ -22,8 +22,7 @@ package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
 public interface MeterValueReceiver
 {
-//	public void receiveMeterReadingLevel( long currentTimestamp, int channelNumber, float meterReading );
-	public void receiveMeterReadingLevel( long currentTimestamp,
+	public void receiveMeterReadingLevel( int U_currentTimestamp,
 			float leftMeterReading,
 			float rightMeterReading );
 

@@ -73,12 +73,13 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTick )
+			final int U_currentGuiTick,
+			final int framesSinceLastTick )
 	{
 		// Process incoming queue messages before we let the controls have a chance to process;
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
 
-		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
+		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, U_currentGuiTick, framesSinceLastTick );
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 		{
 			case DJEQIOQueueBridge.COMMAND_OUT_METER_READINGS:
 			{
-				final long timestamp = nextOutgoingEntry.frameTime;
+				final int U_timestamp = nextOutgoingEntry.U_frameTime;
 				final long val = nextOutgoingEntry.value;
 				final int lower32 = (int)(val & 0xFFFFFFFF);
 				final int upper32 = (int)((val >> 32) & 0xFFFFFFFF);
@@ -97,8 +98,8 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 				final float lMeter = Float.intBitsToFloat( upper32 );
 				final float lMeterDb = AudioMath.levelToDbF( lMeter );
 				final float rMeterDb = AudioMath.levelToDbF( rMeter );
-				meter.receiveMeterReadingInDb( timestamp, 0, lMeterDb );
-				meter.receiveMeterReadingInDb( timestamp, 1, rMeterDb );
+				meter.receiveMeterReadingInDb( U_timestamp, 0, lMeterDb );
+				meter.receiveMeterReadingInDb( U_timestamp, 1, rMeterDb );
 				break;
 			}
 			default:

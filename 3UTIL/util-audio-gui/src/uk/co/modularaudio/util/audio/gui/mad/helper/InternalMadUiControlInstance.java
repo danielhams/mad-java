@@ -58,9 +58,13 @@ public class InternalMadUiControlInstance extends AbstractMadUiControlInstance
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
-		realUiControlInstance.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		realUiControlInstance.doDisplayProcessing( tempEventStorage,
+				timingParameters,
+				U_currentGuiTime,
+				framesSinceLastTick );
 	}
 
 	@Override

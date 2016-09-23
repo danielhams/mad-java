@@ -28,11 +28,11 @@ public interface AmpMeter
 	public static final float GREEN_THRESHOLD_DB = -6.0f;
 	public static final float ORANGE_THRESHOLD_DB = -3.0f;
 
-	void receiveMeterReadingInDb( final long currentTimestamp, final float meterReadingDb );
+	void receiveMeterReadingInDb( final int U_currentTimestamp, final float meterReadingDb );
 
 	void destroy();
 
-	void receiveDisplayTick( long currentGuiTime );
+	void receiveDisplayTick( int U_currentGuiTime, int framesSinceLastTick );
 
 	void setFramesBetweenPeakReset( int framesBetweenPeakReset );
 }

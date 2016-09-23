@@ -60,7 +60,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 
 	// Set during startup and cleared during stop
 	protected MadFrameTimeFactory frameTimeFactory;
-	protected long temporalValueFixedLatencyFrames;
+	protected int U_temporalValueFixedLatencyFrames;
 
 	public AbstractMadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition )
 	{
@@ -107,7 +107,9 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	{
 		this.frameTimeFactory = frameTimeFactory;
 		// Need to offset by one buffer length at audio rate so events don't get bunched up and processed in blocks
-		this.temporalValueFixedLatencyFrames = ratesAndLatency.getAudioChannelSetting().getChannelBufferLength();
+		final int chanBufferLength = ratesAndLatency.getAudioChannelSetting().getChannelBufferLength();
+		assert( chanBufferLength > 0 );
+		this.U_temporalValueFixedLatencyFrames = chanBufferLength;
 	}
 
 	@Override
@@ -151,7 +153,8 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	@Override
 	public final void receiveDisplayTick( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiFrameTime)
+			final int U_currentGuiFrameTime,
+			final int framesSinceLastTick )
 	{
 		try
 		{
@@ -163,10 +166,13 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 				//guiTemporaryEventStorage.resetEventsToUi();
 				guiTemporaryEventStorage.numCommandEventsToUi = commandToUiQueue.copyToTemp( guiTemporaryEventStorage.commandEventsToUi );
 				guiTemporaryEventStorage.numTemporalEventsToUi = temporalToUiQueue.copyToTemp( guiTemporaryEventStorage.temporalEventsToUi,
-						currentGuiFrameTime );
+						U_currentGuiFrameTime );
 			}
 
-			doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
+			doDisplayProcessing( guiTemporaryEventStorage,
+					timingParameters,
+					U_currentGuiFrameTime,
+					framesSinceLastTick );
 
 			if( eventsPassedBetweenInstanceAndUi )
 			{
@@ -192,12 +198,16 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTick )
+			final int U_currentGuiTick,
+			final int framesSinceLastLick )
 	{
 		for( int i =0 ; i < displayProcessingControlInstances.length ; i++)
 		{
 			final AbstractMadUiControlInstance<?, ?, ?> ci = displayProcessingControlInstances[ i ];
-			ci.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
+			ci.doDisplayProcessing( guiTemporaryEventStorage,
+					timingParameters,
+					U_currentGuiTick,
+					framesSinceLastLick );
 		}
 	}
 
@@ -219,33 +229,33 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	{
 		outEvent.command = command;
 		outEvent.value = value;
-		long outEventTimestamp;
+		int U_outEventTimestamp;
 		if( frameTimeFactory != null )
 		{
-			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
-//			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime();
+			U_outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + U_temporalValueFixedLatencyFrames;
+//			U_outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime();
 		}
 		else
 		{
-			outEventTimestamp = 0;
+			U_outEventTimestamp = 0;
 		}
-		localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
+		localQueueBridge.sendTemporalEventToInstance( instance, U_outEventTimestamp,  outEvent );
 	}
 
 	protected void sendTemporalObjectToInstance(final int command, final Object obj)
 	{
 		outEvent.command = command;
 		outEvent.object = obj;
-		long outEventTimestamp;
+		int U_outEventTimestamp;
 		if( frameTimeFactory != null )
 		{
-			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+			U_outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + U_temporalValueFixedLatencyFrames;
 		}
 		else
 		{
-			outEventTimestamp = 0;
+			U_outEventTimestamp = 0;
 		}
-		localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
+		localQueueBridge.sendTemporalEventToInstance( instance, U_outEventTimestamp,  outEvent );
 	}
 
 	protected void sendCommandValueToInstance( final int command, final long value )

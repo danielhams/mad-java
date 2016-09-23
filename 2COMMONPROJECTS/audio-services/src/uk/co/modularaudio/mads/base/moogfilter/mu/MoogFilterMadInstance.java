@@ -204,7 +204,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,

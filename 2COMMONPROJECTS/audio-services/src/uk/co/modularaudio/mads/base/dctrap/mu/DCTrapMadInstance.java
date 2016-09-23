@@ -72,7 +72,7 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long startFrameTime,
+			final int U_startFrameTime,
 			final MadChannelConnectedFlags connectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,

@@ -40,7 +40,7 @@ public class CrossFaderIOQueueBridge extends MadLocklessQueueBridge<CrossFaderMa
 	@Override
 	public void receiveQueuedEventsToInstance( final CrossFaderMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

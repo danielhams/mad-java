@@ -55,7 +55,7 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 	@Override
 	public void receiveQueuedEventsToInstance( final I instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long currentTimestamp,
+			final int U_currentTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
@@ -94,7 +94,7 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 				final int laneNumber = (int)((value ) & 0xFFFFFFFF);
 				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
 				final boolean muteValue = ( upper32Bits != 0);
-				instance.setLaneMute( tses, currentTimestamp, laneNumber, muteValue );
+				instance.setLaneMute( tses, U_currentTimestamp, laneNumber, muteValue );
 				break;
 			}
 			case COMMAND_IN_LANE_SOLO:
@@ -103,7 +103,7 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 				final int laneNumber = (int)((value ) & 0xFFFFFFFF);
 				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
 				final boolean soloValue = ( upper32Bits != 0);
-				instance.setLaneSolo( tses, currentTimestamp, laneNumber, soloValue );
+				instance.setLaneSolo( tses, U_currentTimestamp, laneNumber, soloValue );
 				break;
 			}
 			default:

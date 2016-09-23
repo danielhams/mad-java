@@ -100,7 +100,7 @@ public class TestInstantiatingMadBits
 			final MadChannelInstance[] channelInstances = testInstance.getChannelInstances();
 			final int numChannels = channelInstances.length;
 
-			final long systemCurrentTime = System.currentTimeMillis();
+			int U_frameTime = Integer.MAX_VALUE;
 			final MadChannelConnectedFlags channelConnectedFlags = new MadChannelConnectedFlags( numChannels );
 			final MadChannelBuffer[] channelBuffers = new MadChannelBuffer[ numChannels ];
 			for( int i = 0 ; i < numChannels ; i++ )
@@ -112,8 +112,12 @@ public class TestInstantiatingMadBits
 			}
 			if( testInstance.getDefinition().getId().equals(  StereoTeeMadDefinition.DEFINITION_ID ) )
 			{
-				manyTeeTest( testInstance, timingParameters, systemCurrentTime, channelConnectedFlags, channelBuffers );
-				manyTeeTest( testInstance, timingParameters, systemCurrentTime, channelConnectedFlags, channelBuffers );
+				manyTeeTest( testInstance, timingParameters, U_frameTime, channelConnectedFlags, channelBuffers );
+				manyTeeTest( testInstance, timingParameters, U_frameTime, channelConnectedFlags, channelBuffers );
+
+				U_frameTime = -1024;
+				manyTeeTest( testInstance, timingParameters, U_frameTime, channelConnectedFlags, channelBuffers );
+
 			}
 		}
 
@@ -121,23 +125,26 @@ public class TestInstantiatingMadBits
 
 	private void manyTeeTest( final MadInstance<?,?> testInstance,
 			final MadTimingParameters timingParameters,
-			final long systemCurrentTime,
+			int U_frameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers )
 			throws MadProcessingException
 	{
 		// Now test calling the process method
-		final int numRounds = 100000;
+//		final int numRounds = 100000;
+		final int numRounds = 10;
 		final long nanosBefore = System.nanoTime();
 		final int numFramesPerPeriod = 1024;
 		for( int i = 0 ; i < numRounds ; i++ )
 		{
+			log.debug( "Doing frames starting at index " + Integer.toUnsignedString( U_frameTime ) );
 			testInstance.processNoEvents( null,
 					timingParameters,
-					systemCurrentTime,
+					U_frameTime,
 					channelConnectedFlags,
 					channelBuffers,
 					numFramesPerPeriod );
+			U_frameTime += numFramesPerPeriod;
 		}
 		final long nanosAfter = System.nanoTime();
 		final long diff = nanosAfter - nanosBefore;

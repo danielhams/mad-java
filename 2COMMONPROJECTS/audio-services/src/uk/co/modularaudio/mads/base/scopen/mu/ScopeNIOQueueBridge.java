@@ -57,7 +57,7 @@ public class ScopeNIOQueueBridge<I extends ScopeNMadInstance<?,I>>
 	@Override
 	public void receiveQueuedEventsToInstance( final I instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
@@ -89,7 +89,7 @@ public class ScopeNIOQueueBridge<I extends ScopeNMadInstance<?,I>>
 			}
 			case COMMAND_IN_RECAPTURE:
 			{
-				instance.doRecapture( tses, periodTimestamp );
+				instance.doRecapture( tses, U_periodTimestamp );
 				break;
 			}
 			default:

@@ -42,7 +42,7 @@ public class SpectralAmpGenIOQueueBridge<I extends SpectralAmpGenMadInstance<?,I
 	@Override
 	public void receiveQueuedEventsToInstance( final I instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

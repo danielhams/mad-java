@@ -125,11 +125,11 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 	}
 
 	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  )
 	{
-		spectralDispaly.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		spectralDispaly.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime );
 	}
 
 	@Override

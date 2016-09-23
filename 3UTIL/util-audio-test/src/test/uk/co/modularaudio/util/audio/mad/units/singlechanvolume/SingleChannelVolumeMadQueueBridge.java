@@ -33,7 +33,10 @@ public class SingleChannelVolumeMadQueueBridge extends MadLocklessQueueBridge<Si
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final SingleChannelVolumeMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long timingInfo, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SingleChannelVolumeMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_timingInfo,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

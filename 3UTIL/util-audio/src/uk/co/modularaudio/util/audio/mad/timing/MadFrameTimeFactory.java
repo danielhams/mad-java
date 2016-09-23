@@ -22,5 +22,5 @@ package uk.co.modularaudio.util.audio.mad.timing;
 
 public interface MadFrameTimeFactory
 {
-	long getCurrentUiFrameTime();
+	int getCurrentUiFrameTime();
 }

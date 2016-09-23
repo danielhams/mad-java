@@ -41,7 +41,10 @@ public class RBJFilterIOQueueBridge extends MadLocklessQueueBridge<RBJFilterMadI
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final RBJFilterMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final RBJFilterMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

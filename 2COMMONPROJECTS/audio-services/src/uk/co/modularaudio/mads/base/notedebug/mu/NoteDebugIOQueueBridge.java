@@ -38,7 +38,10 @@ public class NoteDebugIOQueueBridge extends MadLocklessQueueBridge<NoteDebugMadI
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final NoteDebugMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final NoteDebugMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

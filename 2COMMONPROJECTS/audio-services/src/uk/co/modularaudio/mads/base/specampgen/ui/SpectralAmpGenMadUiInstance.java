@@ -210,11 +210,13 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTick )
+			final MadTimingParameters timingParameters,
+			final int U_currentGuiTick,
+			final int framesSinceLastTick )
 	{
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
 
-		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTick );
+		super.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTick, framesSinceLastTick );
 
 		if( peakAmpAccumulator.hasNewAmps() )
 		{
@@ -280,7 +282,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 				if (bufferNum == 0)
 				{
-					receiveBufferIndexUpdate( nextOutgoingEntry.frameTime, ringBufferIndex );
+					receiveBufferIndexUpdate( nextOutgoingEntry.U_frameTime, ringBufferIndex );
 				}
 				break;
 			}
@@ -295,7 +297,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		}
 	}
 
-	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
+	private void receiveBufferIndexUpdate( final int U_indexUpdateTimestamp, final int writeIndex )
 	{
 		int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 

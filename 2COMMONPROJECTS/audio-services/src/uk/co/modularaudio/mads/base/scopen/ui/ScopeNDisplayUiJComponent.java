@@ -205,10 +205,11 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  )
 	{
-		waveDisplay.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		waveDisplay.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime );
 	}
 
 	@Override

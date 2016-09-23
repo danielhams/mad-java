@@ -42,7 +42,7 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 	@Override
 	public void receiveQueuedEventsToInstance( final LimiterMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

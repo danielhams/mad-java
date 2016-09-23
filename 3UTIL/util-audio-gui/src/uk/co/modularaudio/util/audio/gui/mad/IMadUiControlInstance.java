@@ -37,8 +37,9 @@ public interface IMadUiControlInstance<D extends MadDefinition<D, I>,
 
 	void receiveControlValue( String value );
 
-	void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTime );
+	void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  );
 
 	Component getControl();
 

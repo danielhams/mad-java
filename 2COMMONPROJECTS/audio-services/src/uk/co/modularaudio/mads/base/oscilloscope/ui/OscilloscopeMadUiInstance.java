@@ -80,7 +80,8 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 //		log.warn( "Bad latency nanos calculation - this component needs re-writing anyway" );
 		final long newAln = timingParameters.getNanosPerBackEndPeriod() * 3;
@@ -125,7 +126,7 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 //			}
 		}
 
-		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		super.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override

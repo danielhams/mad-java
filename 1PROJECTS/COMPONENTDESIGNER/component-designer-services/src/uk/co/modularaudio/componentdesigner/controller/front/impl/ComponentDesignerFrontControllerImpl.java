@@ -530,7 +530,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		final MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
 
-		final long currentGuiFrameTime = appRenderingSession.getCurrentUiFrameTime();
+		final int U_currentGuiFrameTime = appRenderingSession.getCurrentUiFrameTime();
 //		if( log.isDebugEnabled() )
 //		{
 //			log.debug("Estimated GUI frame time is " + currentGuiFrameTime );
@@ -565,7 +565,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			{
 //				log.debug("Calling rdt on " + uiInstance.getInstance().getInstanceName() );
 
-				rc.receiveDisplayTick( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
+				rc.receiveDisplayTick( guiTemporaryEventStorage,
+						timingParameters,
+						U_currentGuiFrameTime,
+						timingParameters.getSampleFramesPerFrontEndPeriod());
 			}
 		}
 	}

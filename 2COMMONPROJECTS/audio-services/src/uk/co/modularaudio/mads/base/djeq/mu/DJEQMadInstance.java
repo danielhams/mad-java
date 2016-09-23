@@ -130,7 +130,7 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -231,10 +231,10 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 		{
 			if( active && numSamplesProcessed >= sampleFramesPerFrontEndPeriod )
 			{
-				final long emitFrameTime = periodStartFrameTime + frameOffset + currentSampleIndex;
+				final int U_emitFrameTime = U_periodStartFrameTime + frameOffset + currentSampleIndex;
 
 				emitMeterReading( tempQueueEntryStorage,
-						emitFrameTime,
+						U_emitFrameTime,
 						curLeftMeterReading,
 						curRightMeterReading );
 
@@ -299,7 +299,7 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	}
 
 	public void emitMeterReading( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
+			final int U_frameTime,
 			final float leftReading,
 			final float rightReading )
 	{
@@ -308,7 +308,7 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 			final int lFloatIntBits = Float.floatToIntBits( leftReading );
 			final int rFloatIntBits = Float.floatToIntBits( rightReading );
 			final long joinedParts = ((long)lFloatIntBits << 32) | rFloatIntBits;
-			localBridge.queueTemporalEventToUi( tses, frameTime, DJEQIOQueueBridge.COMMAND_OUT_METER_READINGS, joinedParts, null );
+			localBridge.queueTemporalEventToUi( tses, U_frameTime, DJEQIOQueueBridge.COMMAND_OUT_METER_READINGS, joinedParts, null );
 		}
 	}
 

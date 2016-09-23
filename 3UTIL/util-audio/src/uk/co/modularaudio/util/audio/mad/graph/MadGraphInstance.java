@@ -129,7 +129,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
+			final int U_periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{

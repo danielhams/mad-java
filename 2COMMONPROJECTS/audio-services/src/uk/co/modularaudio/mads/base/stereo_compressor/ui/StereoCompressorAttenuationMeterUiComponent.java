@@ -66,9 +66,9 @@ public class StereoCompressorAttenuationMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  )
 	{
 		final boolean showing = isShowing();
 
@@ -78,7 +78,7 @@ public class StereoCompressorAttenuationMeterUiComponent extends PacPanel
 			previouslyShowing = showing;
 		}
 
-		attenuationMeter.receiveDisplayTick( currentGuiTime );
+		attenuationMeter.receiveDisplayTick( U_currentGuiTime );
 	}
 
 	@Override

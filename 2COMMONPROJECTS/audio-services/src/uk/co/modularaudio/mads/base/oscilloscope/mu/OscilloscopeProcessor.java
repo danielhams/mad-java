@@ -50,7 +50,7 @@ public class OscilloscopeProcessor
 			final int frameOffset,
 			final int numFrames,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long timingInfo,
+			final int U_timingInfo,
 			final boolean triggerConnected, final float[] triggerFloats,
 			final boolean audio0Connected, final float[] audio0Floats,
 			final boolean cv0Connected, final float[] cv0Floats,
@@ -199,7 +199,7 @@ public class OscilloscopeProcessor
 				if( scopeData.currentWriteIndex >= scopeData.desiredDataLength )
 				{
 //					log.debug("Emitted scope data to ui");
-					instance.emitScopeDataToUi( tses, timingInfo, scopeData );
+					instance.emitScopeDataToUi( tses, U_timingInfo, scopeData );
 					scopeData = null;
 					currentlyCapturing = false;
 				}

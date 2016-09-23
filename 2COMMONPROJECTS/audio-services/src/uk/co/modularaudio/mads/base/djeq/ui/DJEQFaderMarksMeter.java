@@ -170,7 +170,8 @@ public class DJEQFaderMarksMeter extends PacPanel
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 		final boolean showing = isShowing();
 
@@ -180,7 +181,7 @@ public class DJEQFaderMarksMeter extends PacPanel
 			previouslyShowing = showing;
 		}
 
-		sam.receiveDisplayTick( currentGuiTime );
+		sam.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override

@@ -64,19 +64,19 @@ public class LaneStereoAmpMeter extends JPanel
 		this.validate();
 	}
 
-	public void receiveMeterReadingInDb( final long currentTimestamp, final int channelNum,
+	public void receiveMeterReadingInDb( final int U_currentTimestamp, final int channelNum,
 			final float meterReadingDb )
 	{
 		switch( channelNum )
 		{
 			case 0:
 			{
-				leftMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
+				leftMeter.receiveMeterReadingInDb( U_currentTimestamp, meterReadingDb );
 				break;
 			}
 			case 1:
 			{
-				rightMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
+				rightMeter.receiveMeterReadingInDb( U_currentTimestamp, meterReadingDb );
 				break;
 			}
 			default:
@@ -87,10 +87,10 @@ public class LaneStereoAmpMeter extends JPanel
 		}
 	}
 
-	public void receiveDisplayTick( final long currentGuiTime )
+	public void receiveDisplayTick( final int U_currentGuiTime, final int framesSinceLastTick )
 	{
-		leftMeter.receiveDisplayTick( currentGuiTime );
-		rightMeter.receiveDisplayTick( currentGuiTime );
+		leftMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
+		rightMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
 	}
 
 	public void destroy()

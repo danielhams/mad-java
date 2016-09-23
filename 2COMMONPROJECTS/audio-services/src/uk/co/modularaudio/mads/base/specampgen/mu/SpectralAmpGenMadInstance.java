@@ -112,7 +112,7 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters,
-			final long periodStartTimestamp,
+			final int U_periodStartTimestamp,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -152,7 +152,7 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			}
 
 			// And push to the front end
-			final long timestampForIndexUpdate = periodStartTimestamp + numFrames;
+			final int U_timestampForIndexUpdate = U_periodStartTimestamp + numFrames;
 			final int numWritten = dataRingBuffer.backEndWrite( tmpFloats, tmpPosition, numFrames );
 			if( numWritten != numFrames )
 			{
@@ -161,7 +161,7 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			queueWriteIndexUpdate( tempQueueEntryStorage,
 					0,
 					dataRingBuffer.getWritePosition(),
-					timestampForIndexUpdate );
+					U_timestampForIndexUpdate );
 			dataRingBuffer.backEndClearNumSamplesQueued();
 
 			if( fadePosition >= fadeTable.capacity )
@@ -179,14 +179,14 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{
-						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
+						final int U_timestampForIndexUpdate = U_periodStartTimestamp + curSampleIndex;
 
 						if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplePerFrontEndPeriod )
 						{
 							queueWriteIndexUpdate( tempQueueEntryStorage,
 								0,
 								dataRingBuffer.getWritePosition(),
-								timestampForIndexUpdate );
+								U_timestampForIndexUpdate );
 							dataRingBuffer.backEndClearNumSamplesQueued();
 						}
 
@@ -225,12 +225,12 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 	protected void queueWriteIndexUpdate( final ThreadSpecificTemporaryEventStorage tses,
 			final int dataChannelNum,
 			final int writePosition,
-			final long frameTime )
+			final int U_frameTime )
 	{
 		final long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum );
 
 		localBridge.queueTemporalEventToUi( tses,
-			frameTime,
+			U_frameTime,
 			SpectralAmpGenIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
 			joinedParts,
 			null );

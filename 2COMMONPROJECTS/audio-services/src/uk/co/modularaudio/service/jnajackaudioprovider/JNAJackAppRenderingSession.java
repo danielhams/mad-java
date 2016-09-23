@@ -55,6 +55,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.LocklessHardwareMidiNoteRing
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiToHardwareMidiNoteRingDecoder;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.thread.ThreadUtils;
@@ -284,7 +285,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	public boolean process( final JackClient client, final int numFrames )
 	{
 		final long clockCallbackStartTimestamp = System.nanoTime();
-		long periodStartFrameTime;
+		final int U_periodStartFrameTime;
 //		int jackMaxLatency;
 		try
 		{
@@ -300,7 +301,8 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //			}
 
 //			final long jackTime = client.getFrameTime();
-			periodStartFrameTime = client.getLastFrameTime();
+			final long lastFrameTime = client.getLastFrameTime();
+			U_periodStartFrameTime = (int)(lastFrameTime & AudioMath.MAX_32BIT_UINT_VALUE);
 
 //			log.debug("jack time is " + jackTime );
 //			if( log.isDebugEnabled() )
@@ -321,7 +323,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		}
 //		log.debug("Jack client process called with " + numFrames + " frames");
 
-		masterInBuffersResetOrCopy( numFrames, periodStartFrameTime );
+		masterInBuffersResetOrCopy( numFrames, U_periodStartFrameTime );
 
 		final int numConsumersUsed = (masterOutBuffers.numAudioBuffers < numConsumerAudioPorts ? masterOutBuffers.numAudioBuffers : numConsumerAudioPorts );
 //		boolean setDestinationBuffers = masterOutBuffersTryPointerMoves(numConsumersUsed);
@@ -333,7 +335,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 				clockCallbackStartTimestamp,
 				clockCallbackPostProducerTimestamp,
 				numFrames,
-				periodStartFrameTime );
+				U_periodStartFrameTime );
 
 		if( rc != RealtimeMethodReturnCodeEnum.SUCCESS )
 		{
@@ -520,11 +522,12 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	}
 
 	@Override
-	public long getCurrentUiFrameTime()
+	public int getCurrentUiFrameTime()
 	{
 		try
 		{
-			return client.getFrameTime();
+			final long valAsLong = client.getFrameTime();
+			return (int)(valAsLong & AudioMath.MAX_32BIT_UINT_VALUE);
 		}
 		catch (final JackException e)
 		{
@@ -533,7 +536,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 				log.error("Failed fetching frame time from jack: " + e.toString(), e );
 			}
 			// Fall back to current sytem nanos;
-			return System.nanoTime();
+			return (int)System.nanoTime();
 		}
 	}
 

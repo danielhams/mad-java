@@ -103,7 +103,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters ,
-			final long periodStartTimestamp ,
+			final int U_periodStartTimestamp ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -122,14 +122,14 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{
-						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
+						final int U_timestampForIndexUpdate = U_periodStartTimestamp + curSampleIndex;
 
 						if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
 						{
 							queueWriteIndexUpdate( tempQueueEntryStorage,
 									0,
 									dataRingBuffer.getWritePosition(),
-									timestampForIndexUpdate );
+									U_timestampForIndexUpdate );
 							dataRingBuffer.backEndClearNumSamplesQueued();
 						}
 
@@ -170,12 +170,12 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 	private void queueWriteIndexUpdate(final ThreadSpecificTemporaryEventStorage tses,
 			final int dataChannelNum,
 			final int writePosition,
-			final long frameTime)
+			final int U_frameTime)
 	{
 		final long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum);
 
 		localBridge.queueTemporalEventToUi( tses,
-				frameTime,
+				U_frameTime,
 				WaveRollerIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
 				joinedParts,
 				null );

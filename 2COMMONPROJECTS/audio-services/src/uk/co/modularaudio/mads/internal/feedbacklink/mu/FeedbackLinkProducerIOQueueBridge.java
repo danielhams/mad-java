@@ -29,7 +29,7 @@ public class FeedbackLinkProducerIOQueueBridge extends MadLocklessQueueBridge<Fe
 	@Override
 	public void receiveQueuedEventsToInstance( final FeedbackLinkProducerMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 	}

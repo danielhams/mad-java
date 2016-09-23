@@ -27,10 +27,10 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class StereoTeeMadQueueBridge extends MadLocklessQueueBridge<StereoTeeMadInstance>
 {
 	@Override
-	public void receiveQueuedEventsToInstance( StereoTeeMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long timingInfo,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final StereoTeeMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_timingInfo,
+			final IOQueueEvent queueEntry )
 	{
 	}
 }

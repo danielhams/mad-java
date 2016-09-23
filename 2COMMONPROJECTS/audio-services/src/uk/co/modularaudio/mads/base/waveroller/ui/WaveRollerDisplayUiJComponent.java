@@ -93,9 +93,9 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick )
 	{
 		final boolean showing = isShowing();
 
@@ -239,7 +239,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
+	public void receiveBufferIndexUpdate( final int U_indexUpdateTimestamp, final int writeIndex )
 	{
 		final int numReadable = instanceRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 

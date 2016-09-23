@@ -91,9 +91,13 @@ public class RackComponent implements RackModelTableSpanningContents
 
 	public void receiveDisplayTick( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiFrameTime)
+			final int U_currentGuiFrameTime,
+			final int framesSinceLastTick )
 	{
-		cui.receiveDisplayTick( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
+		cui.receiveDisplayTick( guiTemporaryEventStorage,
+				timingParameters,
+				U_currentGuiFrameTime,
+				framesSinceLastTick );
 	}
 
 	public boolean isDraggable()

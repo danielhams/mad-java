@@ -152,7 +152,7 @@ public class SoundfilePlayer2MadInstance extends MadInstance<SoundfilePlayer2Mad
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -176,7 +176,7 @@ public class SoundfilePlayer2MadInstance extends MadInstance<SoundfilePlayer2Mad
 					if( resampledSample == null )
 					{
 						emitStateChangedToStop( tempQueueEntryStorage,
-								periodStartFrameTime,
+								U_periodStartFrameTime,
 								SoundfilePlayer2MadInstance.PlayingState.STOPPED );
 						log.warn("Unable to flip to playing as no sample available.");
 						currentState = PlayingState.STOPPED;
@@ -221,11 +221,11 @@ public class SoundfilePlayer2MadInstance extends MadInstance<SoundfilePlayer2Mad
 			if( active && numSamplesTillNextEvent <= 0 )
 			{
 				// Emit position event
-				final long eventFrameTime = periodStartFrameTime + curOutputPos;
+				final int U_eventFrameTime = U_periodStartFrameTime + curOutputPos;
 				final long curSamplePos = resampledSample.getFramePosition();
 				if( curSamplePos != lastEmittedPosition )
 				{
-					emitDeltaPositionEvent( tempQueueEntryStorage, eventFrameTime, curSamplePos, resampledSample );
+					emitDeltaPositionEvent( tempQueueEntryStorage, U_eventFrameTime, curSamplePos, resampledSample );
 				}
 
 				lastEmittedPosition = curSamplePos;
@@ -344,23 +344,23 @@ public class SoundfilePlayer2MadInstance extends MadInstance<SoundfilePlayer2Mad
 	}
 
 	protected void emitStateChangedToStop( final ThreadSpecificTemporaryEventStorage tses,
-			final long currentFrameTime,
+			final int U_currentFrameTime,
 			final SoundfilePlayer2MadInstance.PlayingState state )
 	{
 		localBridge.queueTemporalEventToUi( tses,
-				currentFrameTime,
+				U_currentFrameTime,
 				SoundfilePlayer2IOQueueBridge.COMMAND_OUT_STATE_CHANGE,
 				state.ordinal(),
 				null );
 	}
 
 	protected void emitDeltaPositionEvent( final ThreadSpecificTemporaryEventStorage tses,
-			final long eventFrameTime,
+			final int U_eventFrameTime,
 			final long curPos,
 			final BlockResamplingClient whichSample )
 	{
 		localBridge.queueTemporalEventToUi( tses,
-				eventFrameTime,
+				U_eventFrameTime,
 				SoundfilePlayer2IOQueueBridge.COMMAND_OUT_FRAME_POSITION_DELTA,
 				curPos,
 				whichSample );

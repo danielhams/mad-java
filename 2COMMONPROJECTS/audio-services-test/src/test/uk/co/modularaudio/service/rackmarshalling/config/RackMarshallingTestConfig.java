@@ -82,7 +82,7 @@ public class RackMarshallingTestConfig
 	}
 
 	@Override
-	public long getCurrentUiFrameTime()
+	public int getCurrentUiFrameTime()
 	{
 		return 0;
 	}

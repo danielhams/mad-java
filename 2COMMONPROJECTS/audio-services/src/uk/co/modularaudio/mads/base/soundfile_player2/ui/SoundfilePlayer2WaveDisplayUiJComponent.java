@@ -105,9 +105,9 @@ public class SoundfilePlayer2WaveDisplayUiJComponent extends PacPanel
 
 	@Override
 	public void doDisplayProcessing(
-			final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
+			final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick )
 	{
 		if( isShowing() )
 		{

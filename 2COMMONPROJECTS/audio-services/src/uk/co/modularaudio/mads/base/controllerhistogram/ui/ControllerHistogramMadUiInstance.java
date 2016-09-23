@@ -51,11 +51,13 @@ public class ControllerHistogramMadUiInstance
 
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTick )
+			final MadTimingParameters timingParameters,
+			final int U_currentGuiTick,
+			final int framesSinceLastTick )
 	{
 		// Process incoming queue messages before we let the controls have a chance to process;
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
-		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
+		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, U_currentGuiTick, framesSinceLastTick );
 	}
 
 	@Override

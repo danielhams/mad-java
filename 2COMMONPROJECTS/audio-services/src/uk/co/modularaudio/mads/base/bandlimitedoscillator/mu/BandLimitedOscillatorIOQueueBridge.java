@@ -43,7 +43,10 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final BandLimitedOscillatorMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final BandLimitedOscillatorMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

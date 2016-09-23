@@ -37,7 +37,7 @@ public class AudioToCvGenIOQueueBridge<I extends AudioToCvGenMadInstance<?,I>> e
 	@Override
 	public void receiveQueuedEventsToInstance( final I instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long currentTimestamp,
+			final int U_currentTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

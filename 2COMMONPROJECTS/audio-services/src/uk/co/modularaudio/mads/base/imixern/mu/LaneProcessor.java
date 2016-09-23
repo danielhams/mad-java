@@ -36,7 +36,7 @@ public interface LaneProcessor
 			int numThisRound );
 
 	void emitLaneMeterReadings( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			long emitFrameTime );
+			int U_emitFrameTime );
 
 	void setLaneAmp( float ampValue );
 	void setLanePan( float panValue );

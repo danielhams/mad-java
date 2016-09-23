@@ -41,7 +41,7 @@ public class WaveRollerIOQueueBridge extends MadLocklessQueueBridge<WaveRollerMa
 	@Override
 	public void receiveQueuedEventsToInstance( final WaveRollerMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

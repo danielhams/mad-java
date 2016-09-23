@@ -162,7 +162,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
+			final int U_periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
@@ -201,7 +201,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			{
 				// Encode channel and controller in a message back
 				// to the UI
-				sendDiscoveredController( tempQueueEntryStorage, periodStartFrameTime, lastChannel, lastController );
+				sendDiscoveredController( tempQueueEntryStorage, U_periodStartFrameTime, lastChannel, lastController );
 				isLearning = false;
 			}
 		}
@@ -438,7 +438,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	}
 
 	private void sendDiscoveredController( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
+			final int U_frameTime,
 			final int lastChannel,
 			final int lastController )
 	{
@@ -448,7 +448,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		}
 		final long value = (lastChannel << 32) | lastController;
 		localBridge.queueTemporalEventToUi( tses,
-				frameTime,
+				U_frameTime,
 				ControllerToCvIOQueueBridge.COMMAND_OUT_LEARNT_CONTROLLER,
 				value,
 				null );

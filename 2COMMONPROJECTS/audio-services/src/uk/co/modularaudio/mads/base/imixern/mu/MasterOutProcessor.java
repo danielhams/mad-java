@@ -80,7 +80,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				int chanIndex = frameOffset + s;
+				final int chanIndex = frameOffset + s;
 				final float oneFloat = leftOutputFloats[ chanIndex ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
@@ -97,7 +97,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			final float ampToUse = leftAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				int chanIndex = frameOffset + s;
+				final int chanIndex = frameOffset + s;
 				final float oneFloat = leftOutputFloats[ chanIndex ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
@@ -116,7 +116,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				int chanIndex = frameOffset + s;
+				final int chanIndex = frameOffset + s;
 				final float oneFloat = rightOutputFloats[ chanIndex ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
@@ -133,7 +133,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			final float ampToUse = rightAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				int chanIndex = frameOffset + s;
+				final int chanIndex = frameOffset + s;
 				final float oneFloat = rightOutputFloats[ chanIndex ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
@@ -152,10 +152,10 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 
 	@Override
 	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses,
-			final long emitTimestamp )
+			final int U_emitTimestamp )
 	{
 //		log.debug("Emitting master reading at " + emitTimestamp);
-		instance.emitMeterReading( tses, emitTimestamp, 0, currentLeftMeterReading, currentRightMeterReading );
+		instance.emitMeterReading( tses, U_emitTimestamp, 0, currentLeftMeterReading, currentRightMeterReading );
 		currentLeftMeterReading = 0.0f;
 		currentRightMeterReading = 0.0f;
 	}

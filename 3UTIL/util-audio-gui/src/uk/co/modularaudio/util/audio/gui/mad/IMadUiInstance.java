@@ -42,7 +42,8 @@ public interface IMadUiInstance
 
 	void receiveDisplayTick( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime );
+			final int U_currentGuiTime,
+			int framesSinceLastTick );
 
 	void receiveComponentNameChange( String newName );
 

@@ -71,10 +71,10 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
 	}
 
-	public void receiveDisplayTick( final long currentGuiTime )
+	public void receiveDisplayTick( final int U_currentGuiTime, final int framesSinceLastTick )
 	{
-		leftMeter.receiveDisplayTick( currentGuiTime );
-		rightMeter.receiveDisplayTick( currentGuiTime );
+		leftMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
+		rightMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
 	}
 
 	public void destroy()
@@ -91,14 +91,14 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( final long currentTimestamp,
+	public void receiveMeterReadingLevel( final int U_currentTimestamp,
 			final float leftMeterReading,
 			final float rightMeterReading )
 	{
 		final float leftMeterReadingDb = AudioMath.levelToDbF( leftMeterReading );
 		final float rightMeterReadingDb = AudioMath.levelToDbF( rightMeterReading );
-		leftMeter.receiveMeterReadingInDb( currentTimestamp, leftMeterReadingDb );
-		rightMeter.receiveMeterReadingInDb( currentTimestamp, rightMeterReadingDb );
+		leftMeter.receiveMeterReadingInDb( U_currentTimestamp, leftMeterReadingDb );
+		rightMeter.receiveMeterReadingInDb( U_currentTimestamp, rightMeterReadingDb );
 	}
 
 }

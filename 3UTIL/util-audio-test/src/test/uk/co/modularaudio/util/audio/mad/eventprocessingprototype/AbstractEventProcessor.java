@@ -33,7 +33,7 @@ public abstract class AbstractEventProcessor
 
 	public void processWithEvents( final ThreadSpecificTemporaryEventStorage tempEventQueue,
 			final MadTimingParameters timingParameters,
-			long periodStartFrameTime,
+			int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -56,37 +56,34 @@ public abstract class AbstractEventProcessor
 			{
 				IOQueueEvent comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
 
-				long frameTime = comingEvent.frameTime;
+				int U_frameTime = comingEvent.U_frameTime;
 
-				final long numToNextEvent = (frameTime - periodStartFrameTime);
-				final int numToNextEventInt = (int) numToNextEvent;
-				if( numToNextEventInt != numToNextEvent )
-				{
-					throw new MadProcessingException( "Distance to event exceed ints!" );
-				}
+				final int numToNextEvent = Integer.compareUnsigned( U_periodStartFrameTime, U_frameTime );
 
-				final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
+				final int numThisRound = (numToNextEvent < numLeft ? numToNextEvent : numLeft);
 
 				process( tempEventQueue,
 						timingParameters,
-						periodStartFrameTime,
+						U_periodStartFrameTime,
 						channelConnectedFlags,
 						channelBuffers,
 						curIndex,
 						numThisRound );
 
 				curIndex += numThisRound;
-				periodStartFrameTime += numThisRound;
+				U_periodStartFrameTime += numThisRound;
 				curEventIndex++;
 
 				// Process any remaining events
+				int framesLeft = Integer.compareUnsigned( U_frameTime, U_periodStartFrameTime );
 				do
 				{
 					processEvent( comingEvent );
 					comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
-					frameTime = comingEvent.frameTime;
+					U_frameTime = comingEvent.U_frameTime;
+					framesLeft = Integer.compareUnsigned( U_frameTime, U_periodStartFrameTime );
 				}
-				while( curEventIndex < numTemporalEvents && frameTime <= periodStartFrameTime );
+				while( curEventIndex < numTemporalEvents && framesLeft > 0 );
 			}
 
 			// Process any last chunk left over
@@ -94,7 +91,7 @@ public abstract class AbstractEventProcessor
 			{
 				process( tempEventQueue,
 						timingParameters,
-						periodStartFrameTime,
+						U_periodStartFrameTime,
 						channelConnectedFlags,
 						channelBuffers,
 						curIndex,
@@ -106,14 +103,14 @@ public abstract class AbstractEventProcessor
 			// Can be processed as one big chunk
 			process( tempEventQueue,
 					timingParameters,
-					periodStartFrameTime,
+					U_periodStartFrameTime,
 					channelConnectedFlags,
 					channelBuffers,
 					0,
 					numFrames );
 		}
 
-		postProcess( tempEventQueue, timingParameters, periodStartFrameTime );
+		postProcess( tempEventQueue, timingParameters, U_periodStartFrameTime );
 	}
 
 

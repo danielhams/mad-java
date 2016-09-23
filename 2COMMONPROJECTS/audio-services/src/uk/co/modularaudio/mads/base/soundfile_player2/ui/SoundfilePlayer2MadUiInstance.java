@@ -270,10 +270,12 @@ public class SoundfilePlayer2MadUiInstance extends
 	@Override
 	public void doDisplayProcessing(
 			final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTick)
+			final MadTimingParameters timingParameters,
+			final int U_currentGuiTick,
+			final int framesSinceLastTick )
 	{
 		localQueueBridge.receiveQueuedEventsToUi(guiTemporaryEventStorage, instance, this );
-		super.doDisplayProcessing(guiTemporaryEventStorage, timingParameters, currentGuiTick);
+		super.doDisplayProcessing(guiTemporaryEventStorage, timingParameters, U_currentGuiTick, framesSinceLastTick);
 	}
 
 	public void addZoomListener( final ZoomListener zoomDataListener )

@@ -28,6 +28,20 @@
         <rackControl name="TriggerChoice" value="None"/>
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="0" row="9"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Short Average"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
     <rackComponent name="Wave Roller 1" definitionId="wave_roller">
         <rackPosition column="0" row="5"/>
         <rackControl name="CaptureTime" value="60.0"/>
@@ -47,6 +61,7 @@
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 2" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 2" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes) 2" consumerChannelName="Lane 1 Input Wave Right"/>

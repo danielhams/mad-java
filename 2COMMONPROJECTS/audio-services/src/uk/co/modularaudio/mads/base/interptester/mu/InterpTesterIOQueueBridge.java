@@ -49,7 +49,7 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 	@Override
 	public void receiveQueuedEventsToInstance( final InterpTesterMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

@@ -52,9 +52,9 @@ public abstract class AbstractMadUiControlInstance
 	public abstract boolean needsDisplayProcessing();
 
 	@Override
-	public abstract void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime );
+	public abstract void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  );
 
 	@Override
 	public abstract Component getControl();

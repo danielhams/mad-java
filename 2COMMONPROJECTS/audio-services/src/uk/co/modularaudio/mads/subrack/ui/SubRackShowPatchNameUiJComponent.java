@@ -60,9 +60,9 @@ public class SubRackShowPatchNameUiJComponent extends LWTCLabel
 	}
 
 	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick )
 	{
 		// This is ugly :-/
 		// Really shouldn't be doing this on the display tick

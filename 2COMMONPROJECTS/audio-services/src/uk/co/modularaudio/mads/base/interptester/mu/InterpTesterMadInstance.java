@@ -165,7 +165,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
+			final int U_periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
 			final int iFrameOffset,
@@ -190,7 +190,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 				final int interpolatorIndex = it.ordinal();
 				final int interpolatorNanos = tsInterpolatorsDurations[interpolatorIndex];
 				sendInterpolatorNanos( tempQueueEntryStorage,
-						periodStartFrameTime,
+						U_periodStartFrameTime,
 						interpolatorIndex,
 						interpolatorNanos );
 			}
@@ -279,11 +279,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	}
 
 	private void sendInterpolatorNanos( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final long periodStartFrameTime, final int interpolatorIndex, final int interpolatorNanos )
+			final int U_periodStartFrameTime,
+			final int interpolatorIndex,
+			final int interpolatorNanos )
 	{
 		final long value = ((long)interpolatorIndex << 32) | interpolatorNanos;
 		localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
-				periodStartFrameTime,
+				U_periodStartFrameTime,
 				InterpTesterIOQueueBridge.COMMAND_TO_UI_INTERP_NANOS,
 				value,
 				null );

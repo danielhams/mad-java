@@ -127,10 +127,11 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 	public void doDisplayProcessing(
 			final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTick )
+			final int U_currentGuiTick,
+			final int framesSinceLastTick )
 	{
 		localQueueBridge.receiveQueuedEventsToUi(guiTemporaryEventStorage, instance, this );
-		super.doDisplayProcessing(guiTemporaryEventStorage, timingParameters, currentGuiTick);
+		super.doDisplayProcessing(guiTemporaryEventStorage, timingParameters, U_currentGuiTick, framesSinceLastTick);
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 
 				final long value = queueEvent.value;
 				final int newWriteIndex = (int) ((value) & 0xFFFFFFFF);
-				receiveBufferIndexUpdate( queueEvent.frameTime, newWriteIndex );
+				receiveBufferIndexUpdate( queueEvent.U_frameTime, newWriteIndex );
 				break;
 			}
 			default:
@@ -165,7 +166,7 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 		}
 	}
 
-	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
+	private void receiveBufferIndexUpdate( final int U_indexUpdateTimestamp, final int writeIndex )
 	{
 		final int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 //		log.trace("Received index update with timestamp " + indexUpdateTimestamp + " with " + numReadable + " readable");

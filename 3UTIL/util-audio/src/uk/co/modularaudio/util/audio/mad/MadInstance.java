@@ -181,7 +181,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	@SuppressWarnings("unchecked")
 	protected final RealtimeMethodReturnCodeEnum preProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime )
+			final int U_periodStartFrameTime )
 	{
 		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 //			log.debug("Doing queue preprocessing for " + instanceName );
@@ -189,11 +189,11 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 		// This isn't necessary as we're resetting the event counts by the following lines
 		//tempQueueEntryStorage.resetEventsToInstance();
-		final long queuePullingFrameTime = periodStartFrameTime + temporalUiToInstanceFrameOffset;
+		final int U_queuePullingFrameTime = U_periodStartFrameTime + temporalUiToInstanceFrameOffset;
 
 		tempQueueEntryStorage.numCommandEventsToInstance = commandToInstanceQueue.copyToTemp( tempQueueEntryStorage.commandEventsToInstance );
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
-				queuePullingFrameTime );
+				U_queuePullingFrameTime );
 
 //		if( tempQueueEntryStorage.numTemporalEventsToInstance > 0 )
 //		{
@@ -206,7 +206,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		final int numCommands = tempQueueEntryStorage.numCommandEventsToInstance;
 		for( int i = 0 ; i < numCommands ; i++ )
 		{
-			localBridge.receiveQueuedEventsToInstance( (MI)this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.commandEventsToInstance[ i ] );
+			localBridge.receiveQueuedEventsToInstance( (MI)this,
+					tempQueueEntryStorage,
+					U_periodStartFrameTime,
+					tempQueueEntryStorage.commandEventsToInstance[ i ] );
 		}
 		// We don't push the temporal events here - it happens in the processWithEvents call
 
@@ -217,13 +220,15 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	private int consumeTimestampedEvents( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final int numTemporalEvents,
 			final int iCurEventIndex,
-			final long curPeriodStartFrameTime )
+			final int U_curPeriodStartFrameTime )
 	{
 		int curEventIndex = iCurEventIndex;
 //		log.debug("Start consume from event " + curEventIndex );
 		while( curEventIndex < numTemporalEvents )
 		{
-			if( tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime > curPeriodStartFrameTime )
+			final int diff = Integer.compareUnsigned( tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].U_frameTime,
+					U_curPeriodStartFrameTime );
+			if( diff > 0 )
 			{
 //				log.debug("Hit future event");
 				break;
@@ -232,7 +237,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			{
 				localBridge.receiveQueuedEventsToInstance( (MI)this,
 						tempQueueEntryStorage,
-						curPeriodStartFrameTime,
+						U_curPeriodStartFrameTime,
 						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex++] );
 //				log.debug("Consumed event");
 			}
@@ -244,7 +249,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	@SuppressWarnings("unchecked")
 	public RealtimeMethodReturnCodeEnum processWithEvents( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int numFrames )
@@ -252,7 +257,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 //		log.debug("ProcessWithEvents in " + instanceName);
 		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 
-		preProcess( tempQueueEntryStorage, timingParameters, periodStartFrameTime );
+		preProcess( tempQueueEntryStorage, timingParameters, U_periodStartFrameTime );
 		final int numTemporalEvents = tempQueueEntryStorage.numTemporalEventsToInstance;
 
 		if( numTemporalEvents > 0 )
@@ -264,13 +269,13 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 			int numLeft = numFrames;
 			int curFrameIndex = 0;
-			long curPeriodStartFrameTime = periodStartFrameTime;
+			int U_curPeriodStartFrameTime = U_periodStartFrameTime;
 
 			// Process any events that should be taken on board before doing any dsp
 			curEventIndex = consumeTimestampedEvents( tempQueueEntryStorage,
 					numTemporalEvents,
 					curEventIndex,
-					curPeriodStartFrameTime );
+					U_curPeriodStartFrameTime );
 
 			if( log.isTraceEnabled() && curEventIndex > 1)
 			{
@@ -281,9 +286,11 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			// the frames
 			while( numLeft > 0 )
 			{
+				final int diff = Integer.compareUnsigned(
+						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].U_frameTime,
+						U_curPeriodStartFrameTime );
 				final int numToNextEventInt = ( curEventIndex == numTemporalEvents ? numLeft :
-					(int)(tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime -
-							curPeriodStartFrameTime) );
+					diff );
 
 //				if( numToNextEventInt == 0 )
 //				{
@@ -302,7 +309,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 				if( (retVal = process( tempQueueEntryStorage,
 						timingParameters,
-						curPeriodStartFrameTime,
+						U_curPeriodStartFrameTime,
 						channelConnectedFlags,
 						channelBuffers,
 						curFrameIndex,
@@ -314,11 +321,11 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				}
 
 				// Process any events for this frame index
-				curPeriodStartFrameTime += numThisRound;
+				U_curPeriodStartFrameTime += numThisRound;
 				curEventIndex = consumeTimestampedEvents( tempQueueEntryStorage,
 						numTemporalEvents,
 						curEventIndex,
-						curPeriodStartFrameTime );
+						U_curPeriodStartFrameTime );
 
 				curFrameIndex += numThisRound;
 				numLeft -= numThisRound;
@@ -335,7 +342,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			{
 				localBridge.receiveQueuedEventsToInstance( (MI)this,
 						tempQueueEntryStorage,
-						curPeriodStartFrameTime,
+						U_curPeriodStartFrameTime,
 						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex++] );
 			}
 		}
@@ -344,7 +351,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			// Can be processed as one big chunk
 			if( (retVal = process( tempQueueEntryStorage,
 					timingParameters,
-					periodStartFrameTime,
+					U_periodStartFrameTime,
 					channelConnectedFlags,
 					channelBuffers,
 					0,
@@ -356,7 +363,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			}
 		}
 
-		postProcess( tempQueueEntryStorage, timingParameters, periodStartFrameTime );
+		postProcess( tempQueueEntryStorage, timingParameters, U_periodStartFrameTime );
 
 		return retVal;
 	}
@@ -364,7 +371,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	public RealtimeMethodReturnCodeEnum processNoEvents( final ThreadSpecificTemporaryEventStorage tempEventQueue,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int numFrames )
@@ -373,7 +380,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		// Can be processed as one big chunk
 		return process( tempEventQueue,
 				timingParameters,
-				periodStartFrameTime,
+				U_periodStartFrameTime,
 				channelConnectedFlags,
 				channelBuffers,
 				0,
@@ -382,7 +389,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	public abstract RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			MadChannelConnectedFlags channelConnectedFlags,
 			MadChannelBuffer[] channelBuffers,
 			int frameOffset,
@@ -390,7 +397,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	protected final RealtimeMethodReturnCodeEnum postProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime )
+			final int U_periodStartFrameTime )
 	{
 		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 

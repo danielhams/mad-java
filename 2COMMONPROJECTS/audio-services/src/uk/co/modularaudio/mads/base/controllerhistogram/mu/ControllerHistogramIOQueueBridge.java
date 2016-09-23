@@ -35,7 +35,7 @@ public class ControllerHistogramIOQueueBridge extends MadLocklessQueueBridge<Con
 	@Override
 	public void receiveQueuedEventsToInstance( final ControllerHistogramMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 	}

@@ -73,14 +73,15 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 		// Consume any incoming messages from the instance before we pass the tick onto any children
 		localQueueBridge.receiveQueuedEventsToUi( guiEventStorage, instance, this );
 //		log.debug("Consumed " + numMessagesConsumed + " messages");
 //		debugTimestamp( "UI Mixer", currentGuiTime );
 
-		super.doDisplayProcessing( guiEventStorage, timingParameters, currentGuiTime );
+		super.doDisplayProcessing( guiEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 //				log.debug("Consuming one for lane " + laneNum );
 
 				laneMeterReceiversMap[ laneNum ].receiveMeterReadingLevel(
-						nextOutgoingEntry.frameTime,
+						nextOutgoingEntry.U_frameTime,
 						leftChannelAmp,
 						rightChannelAmp );
 

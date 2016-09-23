@@ -137,8 +137,9 @@ public class WaveRollerScaleDisplay extends JPanel
 	}
 
 	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters, final long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , int framesSinceLastTick  )
 	{
 	}
 

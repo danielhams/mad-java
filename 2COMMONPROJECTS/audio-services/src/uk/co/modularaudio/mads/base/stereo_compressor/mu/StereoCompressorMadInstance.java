@@ -48,7 +48,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 	private int framesBetweenMeterReadings;
 
-	private long lastMeterReadingTimestamp;
+	private int numFramesSinceLastMeterReading;
 	private float previousInLeftMeterReading;
 	private float previousInRightMeterReading;
 	private float currentInLeftMeterReading;
@@ -129,6 +129,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			periodLength = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 
 			framesBetweenMeterReadings = timingParameters.getSampleFramesPerFrontEndPeriod();
+			numFramesSinceLastMeterReading = 0;
 
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
@@ -161,7 +162,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long currentTimestamp,
+			final int U_currentTimestamp,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -236,16 +237,16 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			currentOutRightMeterReading = processOneChannelOutput( numFrames, outWaveRightFloats, currentOutRightMeterReading );
 		}
 
-		if( active && (lastMeterReadingTimestamp + framesBetweenMeterReadings) < currentTimestamp )
+		if( active && (numFramesSinceLastMeterReading > framesBetweenMeterReadings ) )
 		{
-			lastMeterReadingTimestamp = currentTimestamp;
+			numFramesSinceLastMeterReading = 0;
 //			log.debug("Emitting one at " + lastMeterReadingTimestamp);
 
 			if( currentInLeftMeterReading != previousInLeftMeterReading )
 			{
 				final long floatIntBits = Float.floatToIntBits( currentInLeftMeterReading );
 				final long valueOut = floatIntBits << 32;
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
 				previousInLeftMeterReading = currentInLeftMeterReading;
 			}
 
@@ -255,7 +256,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			{
 				final long floatIntBits = Float.floatToIntBits( currentInRightMeterReading );
 				final long valueOut = (floatIntBits << 32) | 1;
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
 				previousInRightMeterReading = currentInRightMeterReading;
 			}
 
@@ -265,7 +266,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			{
 				final long floatIntBits = Float.floatToIntBits( currentOutLeftMeterReading );
 				final long valueOut = floatIntBits << 32;
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
 				previousOutLeftMeterReading = currentOutLeftMeterReading;
 			}
 
@@ -275,7 +276,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			{
 				final long floatIntBits = Float.floatToIntBits( currentOutRightMeterReading );
 				final long valueOut = (floatIntBits << 32) | 1;
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
 				previousOutRightMeterReading = currentOutRightMeterReading;
 			}
 
@@ -284,7 +285,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			if( currentEnvMeterReading != previousEnvMeterReading )
 			{
 				final long floatIntBits = Float.floatToIntBits( currentEnvMeterReading );
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE, floatIntBits, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE, floatIntBits, null );
 				previousEnvMeterReading = currentEnvMeterReading;
 			}
 
@@ -293,11 +294,15 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			if( currentAttenuationMeterReading != previousAttenuationMeterReading )
 			{
 				final long floatIntBits = Float.floatToIntBits( currentAttenuationMeterReading );
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION, floatIntBits, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, U_currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION, floatIntBits, null );
 				previousAttenuationMeterReading = currentAttenuationMeterReading;
 			}
 
 			currentAttenuationMeterReading = 1.0f;
+		}
+		else
+		{
+			numFramesSinceLastMeterReading += numFrames;
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

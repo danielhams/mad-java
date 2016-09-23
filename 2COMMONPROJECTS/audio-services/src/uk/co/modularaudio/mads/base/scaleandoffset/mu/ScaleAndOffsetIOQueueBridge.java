@@ -35,8 +35,10 @@ public class ScaleAndOffsetIOQueueBridge extends MadLocklessQueueBridge<ScaleAnd
 	public static final int COMMAND_IN_OFFSET = 1;
 
 	@Override
-	public void receiveQueuedEventsToInstance( final ScaleAndOffsetMadInstance instance, final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final ScaleAndOffsetMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

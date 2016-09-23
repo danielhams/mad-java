@@ -90,8 +90,8 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 				renderingPlanIOSettings.getAudioChannelSetting().getChannelBufferLength() );
 
 		final MadChannelPeriodData periodData = timingService.getTimingSource().getTimingPeriodData();
-		long periodStartFrameTime = 0;
-		periodData.reset( periodStartFrameTime, samplesPerRenderPeriod );
+		int U_periodStartFrameTime = 0;
+		periodData.reset( U_periodStartFrameTime, samplesPerRenderPeriod );
 
 		try
 		{
@@ -106,12 +106,12 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 			boolean localShouldHalt = shouldHalt;
 			while( !localShouldHalt )
 			{
-				periodData.reset( periodStartFrameTime, periodData.getNumFramesThisPeriod() );
+				periodData.reset( U_periodStartFrameTime, periodData.getNumFramesThisPeriod() );
 
 				clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing( renderingPlan, shouldProfileRenderingJobs );
 
 				localShouldHalt = shouldHalt;
-				periodStartFrameTime += periodData.getNumFramesThisPeriod();
+				U_periodStartFrameTime += periodData.getNumFramesThisPeriod();
 			}
 
 			for( final MadInstance<?,?> aui : allAuis )

@@ -42,13 +42,16 @@ public class SingleSamplePlayerIOQueueBridge extends MadLocklessQueueBridge<Sing
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( SingleSamplePlayerMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SingleSamplePlayerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_ROOT_NOTE:
 			{
-				MidiNote relatedNote = MidiUtils.getMidiNoteFromNumberReturnNull( (int )queueEntry.value );
+				final MidiNote relatedNote = MidiUtils.getMidiNoteFromNumberReturnNull( (int )queueEntry.value );
 				if( relatedNote != null )
 				{
 					instance.currentRootNoteFreq = relatedNote.getFrequency();
@@ -57,14 +60,14 @@ public class SingleSamplePlayerIOQueueBridge extends MadLocklessQueueBridge<Sing
 			}
 			case COMMAND_START_POS:
 			{
-				float startPosMillis = Float.intBitsToFloat( (int)queueEntry.value );
-				int startPosFrameNum = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate, startPosMillis );
+				final float startPosMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				final int startPosFrameNum = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate, startPosMillis );
 				instance.currentStartPosFrameNum = startPosFrameNum;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

@@ -80,7 +80,7 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -110,7 +110,7 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 					frameOffset,
 					numFrames,
 					tempQueueEntryStorage,
-					periodStartFrameTime,
+					U_periodStartFrameTime,
 					inTriggerConnected, inTriggerFloats,
 					in0Connected, in0Floats,
 					in0CvConnected, in0CvFloats,
@@ -120,8 +120,14 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	protected void emitScopeDataToUi( final ThreadSpecificTemporaryEventStorage tstes, final long frameTime, final OscilloscopeWriteableScopeData scopeData )
+	protected void emitScopeDataToUi( final ThreadSpecificTemporaryEventStorage tstes,
+			final int U_frameTime,
+			final OscilloscopeWriteableScopeData scopeData )
 	{
-		localBridge.queueTemporalEventToUi( tstes, frameTime, OscilloscopeIOQueueBridge.COMMAND_OUT_SCOPE_DATA, -1, scopeData );
+		localBridge.queueTemporalEventToUi( tstes,
+				U_frameTime,
+				OscilloscopeIOQueueBridge.COMMAND_OUT_SCOPE_DATA,
+				-1,
+				scopeData );
 	}
 }

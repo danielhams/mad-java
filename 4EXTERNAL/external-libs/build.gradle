@@ -35,6 +35,7 @@ dependencies {
   compile 'com.sun.xml.bind:jaxb-xjc:2.2.4-1'
   compile 'org.hsqldb:hsqldb:2.3.2'
   compile files('tmpcustomlib/jnajack-custom.jar')
+  compile files('tmpcustomlib/jwave-custom.jar')
 }
 
 task get_libs(type: Copy) {

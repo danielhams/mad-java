@@ -170,10 +170,10 @@ public class InputLaneProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 
 	@Override
 	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses,
-			final long meterTimestamp )
+			final int U_meterTimestamp )
 	{
 		instance.emitMeterReading( tses,
-				meterTimestamp,
+				U_meterTimestamp,
 				laneNumber,
 				currentLeftMeterReading,
 				currentRightMeterReading );

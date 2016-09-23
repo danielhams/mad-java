@@ -36,7 +36,7 @@ public interface AppRenderingSession
 
 	boolean testRendering( long testClientRunMillis );
 
-	long getCurrentUiFrameTime();
+	int getCurrentUiFrameTime();
 
 	void dumpRenderingPlan() throws DatastoreException;
 	void dumpProfileResults();

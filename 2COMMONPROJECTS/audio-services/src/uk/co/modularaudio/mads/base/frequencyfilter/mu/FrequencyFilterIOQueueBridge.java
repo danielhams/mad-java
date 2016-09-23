@@ -44,7 +44,7 @@ public class FrequencyFilterIOQueueBridge extends MadLocklessQueueBridge<Frequen
 	@Override
 	public void receiveQueuedEventsToInstance( final FrequencyFilterMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

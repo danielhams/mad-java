@@ -28,7 +28,7 @@ public class IOQueueEventCopier implements BufferObjectCopier<IOQueueEvent>
 	@Override
 	public void copyValues( final IOQueueEvent in, final IOQueueEvent out )
 	{
-		out.frameTime = in.frameTime;
+		out.U_frameTime = in.U_frameTime;
 		out.command = in.command;
 		out.value = in.value;
 		out.object = in.object;

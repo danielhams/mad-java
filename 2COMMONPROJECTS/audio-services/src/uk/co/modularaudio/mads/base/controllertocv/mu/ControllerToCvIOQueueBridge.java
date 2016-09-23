@@ -49,7 +49,7 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 	@Override
 	public void receiveQueuedEventsToInstance( final ControllerToCvMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

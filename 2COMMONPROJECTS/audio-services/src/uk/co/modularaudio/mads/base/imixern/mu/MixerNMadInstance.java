@@ -100,7 +100,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
+			final int U_periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
 			final int frameOffset,
@@ -121,11 +121,11 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			{
 				// Emit stuff
 //				log.debug("Emitting meter readings at " + emitTimestamp );
-				final long emitFrameTime = periodStartFrameTime + currentSampleIndex;
+				final int U_emitFrameTime = U_periodStartFrameTime + currentSampleIndex;
 
 				for( final LaneProcessor lp : laneProcessors )
 				{
-					lp.emitLaneMeterReadings( tempQueueEntryStorage, emitFrameTime );
+					lp.emitLaneMeterReadings( tempQueueEntryStorage, U_emitFrameTime );
 				}
 
 //				postProcess( tempQueueEntryStorage, timingParameters, emitFrameTime );
@@ -174,7 +174,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	}
 
 	public void emitMeterReading( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
+			final int U_frameTime,
 			final int laneNumber,
 			final float leftMeterLevel,
 			final float rightMeterLevel )
@@ -188,7 +188,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			final long joinedParts = (leftFloatIntBits << 48) |
 					(rightFloatIntBits << 32) |
 					laneNumber;
-			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_METER, joinedParts, null );
+			localBridge.queueTemporalEventToUi( tses, U_frameTime, MixerNIOQueueBridge.COMMAND_OUT_METER, joinedParts, null );
 		}
 	}
 

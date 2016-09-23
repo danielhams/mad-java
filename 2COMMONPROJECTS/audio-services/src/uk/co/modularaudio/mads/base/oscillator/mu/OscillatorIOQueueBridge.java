@@ -41,7 +41,10 @@ public class OscillatorIOQueueBridge extends MadLocklessQueueBridge<OscillatorMa
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final OscillatorMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final OscillatorMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{

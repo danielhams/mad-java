@@ -102,12 +102,13 @@ public class StereoCompressorMadUiInstance
 	public void doDisplayProcessing(
 			final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiFrameTime )
+			final int U_currentGuiFrameTime,
+			final int framesSinceLastTick )
 	{
 		// Receive any events from the instance first
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
 
-		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
+		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, U_currentGuiFrameTime, framesSinceLastTick );
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public class StereoCompressorMadUiInstance
 				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( sourceSignalValueReceiver != null )
 				{
-					sourceSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, chanNum, ampValue );
+					sourceSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.U_frameTime, chanNum, ampValue );
 				}
 				break;
 			}
@@ -137,7 +138,7 @@ public class StereoCompressorMadUiInstance
 				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( outSignalValueReceiver != null )
 				{
-					outSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, chanNum, ampValue );
+					outSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.U_frameTime, chanNum, ampValue );
 				}
 				break;
 			}
@@ -148,7 +149,7 @@ public class StereoCompressorMadUiInstance
 				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( envSignalValueReceiver != null )
 				{
-					envSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, 0, ampValue );
+					envSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.U_frameTime, 0, ampValue );
 				}
 				break;
 			}
@@ -159,7 +160,7 @@ public class StereoCompressorMadUiInstance
 				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( attenuationSignalValueReceiver != null )
 				{
-					attenuationSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, 0, ampValue );
+					attenuationSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.U_frameTime, 0, ampValue );
 				}
 				break;
 			}

@@ -75,7 +75,7 @@ public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVol
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long currentTime,
+			final int U_currentTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,

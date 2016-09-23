@@ -208,9 +208,10 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
-		stereoAmpMeter.receiveDisplayTick( currentGuiTime );
+		stereoAmpMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override

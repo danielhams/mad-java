@@ -125,7 +125,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tses,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -148,7 +148,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 				case IDLE:
 				{
 					numFramesThisRound = doOneIdlePass( tses,
-							periodStartFrameTime,
+							U_periodStartFrameTime,
 							frameOffset,
 							currentFrameOffset,
 							numLeftThisRound );
@@ -165,7 +165,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 				case TRIGGER_HUNT_POST:
 				{
 					numFramesThisRound = doOneTriggerPostPass( tses,
-							periodStartFrameTime,
+							U_periodStartFrameTime,
 							frameOffset,
 							currentFrameOffset,
 							numLeftThisRound,
@@ -175,7 +175,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 				case CAPTURING:
 				{
 					numFramesThisRound = doOneCapturePass( tses,
-							periodStartFrameTime,
+							U_periodStartFrameTime,
 							frameOffset,
 							currentFrameOffset,
 							numLeftThisRound,
@@ -196,7 +196,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	private int doOneIdlePass( final ThreadSpecificTemporaryEventStorage tses,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final int frameOffset,
 			final int currentFrameOffset,
 			final int numLeftThisRound )
@@ -205,11 +205,11 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 		if( repetition == RepetitionChoice.CONTINUOUS )
 		{
 			numFramesThisRound = 0;
-			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+			final int U_eventFrameTime = (U_periodStartFrameTime + frameOffset) + currentFrameOffset;
 			workingTrigger = desiredTrigger;
 			if( desiredTrigger == TriggerChoice.NONE )
 			{
-				startCapture( tses, eventFrameTime );
+				startCapture( tses, U_eventFrameTime );
 			}
 			else
 			{
@@ -271,7 +271,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	private int doOneTriggerPostPass( final ThreadSpecificTemporaryEventStorage tses,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final int frameOffset,
 			final int currentFrameOffset,
 			final int numLeftThisRound,
@@ -293,8 +293,8 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 					if( triggerValue > 0.0f )
 					{
 						numFramesThisRound = i + 1;
-						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
-						startCapture( tses, eventFrameTime );
+						final int U_eventFrameTime = (U_periodStartFrameTime + frameOffset) + (currentFrameOffset + i);
+						startCapture( tses, U_eventFrameTime );
 						break TRIGGER_POST_FOUND;
 					}
 					break;
@@ -304,8 +304,8 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 					if( triggerValue <= 0.0f )
 					{
 						numFramesThisRound = i + 1;
-						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
-						startCapture( tses, eventFrameTime );
+						final int U_eventFrameTime = (U_periodStartFrameTime + frameOffset) + (currentFrameOffset + i);
+						startCapture( tses, U_eventFrameTime );
 						break TRIGGER_POST_FOUND;
 					}
 					break;
@@ -321,7 +321,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	private int doOneCapturePass( final ThreadSpecificTemporaryEventStorage tses,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final int frameOffset,
 			final int currentFrameOffset,
 			final int numLeftThisRound,
@@ -355,9 +355,9 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 
 		if( workingFramesCaptured == workingDesiredFramesToCapture )
 		{
-			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+			final int U_eventFrameTime = (U_periodStartFrameTime + frameOffset) + currentFrameOffset;
 			// Completed capture
-			emitWritePositionEvent( tses, eventFrameTime );
+			emitWritePositionEvent( tses, U_eventFrameTime );
 
 			// Now if we need to re-trigger, set the state accordingly
 			// We check is active so we're only spamming one capture when
@@ -367,7 +367,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 			{
 				if( desiredTrigger == TriggerChoice.NONE )
 				{
-					startCapture( tses, eventFrameTime );
+					startCapture( tses, U_eventFrameTime );
 				}
 				else
 				{
@@ -386,9 +386,9 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 			// number of front end frames
 			if( workingDesiredFramesToCapture >= framesPerFrontEndPeriod )
 			{
-				final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+				final int U_eventFrameTime = (U_periodStartFrameTime + frameOffset) + currentFrameOffset;
 				// mid capture, emit write position event
-				emitWritePositionEvent( tses, eventFrameTime );
+				emitWritePositionEvent( tses, U_eventFrameTime );
 			}
 		}
 		return numFramesThisRound;
@@ -445,12 +445,12 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	private void emitWritePositionEvent( final ThreadSpecificTemporaryEventStorage tses,
-			final long eventFrameTime )
+			final int U_eventFrameTime )
 	{
 		final int writePosition = backEndFrontEndBuffer.getWritePosition();
 
 		localBridge.queueTemporalEventToUi( tses,
-				eventFrameTime,
+				U_eventFrameTime,
 				ScopeNIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
 				writePosition,
 				null );
@@ -469,7 +469,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	private void startCapture( final ThreadSpecificTemporaryEventStorage tses,
-			final long eventFrameTime )
+			final int U_eventFrameTime )
 	{
 		state = State.CAPTURING;
 		// We need a constant "how many to capture" per capture
@@ -479,7 +479,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 		workingFrontEndPeriodFramesCaptured = 0;
 
 		localBridge.queueTemporalEventToUi( tses,
-				eventFrameTime,
+				U_eventFrameTime,
 				ScopeNIOQueueBridge.COMMAND_OUT_DATA_START,
 				1,
 				null );
@@ -491,7 +491,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	}
 
 	public void doRecapture( final ThreadSpecificTemporaryEventStorage tses,
-			final long eventFrameTime )
+			final int U_eventFrameTime )
 	{
 		if( repetition == RepetitionChoice.ONCE &&
 				state == State.IDLE )
@@ -500,7 +500,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 			{
 				case NONE:
 				{
-					startCapture( tses, eventFrameTime );
+					startCapture( tses, U_eventFrameTime );
 					break;
 				}
 				default:

@@ -59,9 +59,10 @@ public class SubRackShowPatchNameUiControlInstance
 	@Override
 	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
-		jComponent.doDisplayProcessing( null, timingParameters, currentGuiTime );
+		jComponent.doDisplayProcessing( null, timingParameters, U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override

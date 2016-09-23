@@ -57,7 +57,7 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 	public void receiveQueuedEventsToInstance(
 			final StereoCompressorMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

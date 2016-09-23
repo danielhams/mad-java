@@ -489,7 +489,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			final long clockCallbackStartTimestamp,
 			final long clockCallbackPostProducer,
 			final int numFrames,
-			final long periodStartFrameTime )
+			final int U_periodStartFrameTime )
 	{
 		RenderingPlan rp = null;
 		long clockCallbackPostRpFetch = -1;
@@ -508,7 +508,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			// We set up the channel period data here so that it's accessible to any threads that
 			// do work on the job queue items
 			final MadChannelPeriodData autpd = timingService.getTimingSource().getTimingPeriodData();
-			autpd.reset( periodStartFrameTime,  numFrames);
+			autpd.reset( U_periodStartFrameTime,  numFrames);
 
 			clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing( rp, localShouldProfileRenderingJobs );
 		}
@@ -536,7 +536,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	 * @see uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory#getCurrentUiFrameTime()
 	 */
 	@Override
-	public abstract long getCurrentUiFrameTime();
+	public abstract int getCurrentUiFrameTime();
 
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#dumpRenderingPlan()

@@ -80,12 +80,13 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 		// Process messages before we pass the tick to the controls (and thus the display)
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
 
-		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		super.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 
 				if( bufferNum == 0 )
 				{
-					scopeDataListener.receiveBufferIndexUpdate( nextOutgoingEntry.frameTime, ringBufferIndex );
+					scopeDataListener.receiveBufferIndexUpdate( nextOutgoingEntry.U_frameTime, ringBufferIndex );
 				}
 				break;
 			}

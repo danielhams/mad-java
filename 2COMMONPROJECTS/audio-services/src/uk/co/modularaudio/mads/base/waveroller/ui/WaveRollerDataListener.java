@@ -28,7 +28,7 @@ public interface WaveRollerDataListener
 	void receiveStartup( final HardwareIOChannelSettings ratesAndLatency, final MadTimingParameters timingParameters );
 	void receiveStop();
 
-	void receiveBufferIndexUpdate( long updateTimestamp, int bufferWriteIndex );
+	void receiveBufferIndexUpdate( int U_updateTimestamp, int bufferWriteIndex );
 
 	void setCaptureTimeMillis( float captureMillis );
 

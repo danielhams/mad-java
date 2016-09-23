@@ -55,7 +55,7 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 	private float currentMeterValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMeterValueDb = Float.POSITIVE_INFINITY;
 
-	private long maxValueTimestamp = 0;
+	private int numFramesSinceLastReset = 0;
 	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMaxValueDb = Float.POSITIVE_INFINITY;
 
@@ -163,17 +163,21 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 	}
 
 	@Override
-	public void receiveDisplayTick( final long currentTime )
+	public void receiveDisplayTick( final int U_currentTime, final int framesSinceLastTick )
 	{
 		if( currentMeterValueDb > currentMaxValueDb )
 		{
 			currentMaxValueDb = currentMeterValueDb;
-			maxValueTimestamp = currentTime;
+			numFramesSinceLastReset = 0;
 		}
-		else if( (maxValueTimestamp + framesBetweenPeakReset ) < currentTime )
+		else if( numFramesSinceLastReset > framesBetweenPeakReset )
 		{
 			currentMaxValueDb = currentMeterValueDb;
-			maxValueTimestamp = currentTime;
+			numFramesSinceLastReset = 0;
+		}
+		else
+		{
+			numFramesSinceLastReset += framesSinceLastTick;
 		}
 
 		if( currentMeterValueDb != previouslyPaintedMeterValueDb ||
@@ -186,7 +190,7 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 	}
 
 	@Override
-	public void receiveMeterReadingInDb( final long currentTimestamp, final float meterReadingDb )
+	public void receiveMeterReadingInDb( final int U_currentTimestamp, final float meterReadingDb )
 	{
 		currentMeterValueDb = meterReadingDb;
 	}

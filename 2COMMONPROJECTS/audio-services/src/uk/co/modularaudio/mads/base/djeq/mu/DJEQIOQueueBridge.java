@@ -46,7 +46,7 @@ public class DJEQIOQueueBridge extends MadLocklessQueueBridge<DJEQMadInstance>
 	@Override
 	public void receiveQueuedEventsToInstance( final DJEQMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 //		log.debug("Received queued event : " + queueEntry.command);

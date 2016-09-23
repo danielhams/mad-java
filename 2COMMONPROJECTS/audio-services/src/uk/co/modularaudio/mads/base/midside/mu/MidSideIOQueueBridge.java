@@ -36,7 +36,7 @@ public class MidSideIOQueueBridge extends MadLocklessQueueBridge<MidSideMadInsta
 	@Override
 	public void receiveQueuedEventsToInstance( final MidSideMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
-			final long periodTimestamp,
+			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )

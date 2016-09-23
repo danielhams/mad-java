@@ -175,7 +175,8 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 		final boolean showing = isShowing();
 
@@ -185,7 +186,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 			previouslyShowing = showing;
 		}
 
-		stereoAmpMeter.receiveDisplayTick( currentGuiTime );
+		stereoAmpMeter.receiveDisplayTick( U_currentGuiTime, framesSinceLastTick );
 	}
 
 	@Override

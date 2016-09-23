@@ -106,20 +106,21 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
-		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+		super.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick );
 //		super.receiveDisplayTick( tempEventStorage, currentGuiTime );
 		final boolean showing = isSubrackShown();
 		if( !showing && !havePassedNoshowTick )
 		{
 			// Force a receive display tick to all components to allow them to emit "inactive"
-			passDisplayTickToSubRack( tempEventStorage, timingParameters, currentGuiTime, true );
+			passDisplayTickToSubRack( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick, true );
 			havePassedNoshowTick = true;
 		}
 		else
 		{
-			passDisplayTickToSubRack( tempEventStorage, timingParameters, currentGuiTime, false );
+			passDisplayTickToSubRack( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick, false );
 			if( showing )
 			{
 				havePassedNoshowTick = false;
@@ -129,7 +130,8 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 
 	private void passDisplayTickToSubRack( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
-			final long currentGuiTime,
+			final int U_currentGuiTime,
+			final int framesSinceLastTick,
 			final boolean forceTick )
 	{
 		// We need to call receive display tick on child if they are a subrack
@@ -154,7 +156,10 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{
-				uiInstance.receiveDisplayTick( tempEventStorage, timingParameters, currentGuiTime );
+				uiInstance.receiveDisplayTick( tempEventStorage,
+						timingParameters,
+						U_currentGuiTime,
+						framesSinceLastTick );
 			}
 		}
 	}

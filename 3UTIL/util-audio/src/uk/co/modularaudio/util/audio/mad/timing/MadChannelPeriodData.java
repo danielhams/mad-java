@@ -25,22 +25,22 @@ public class MadChannelPeriodData
 {
 //	private static Log log = LogFactory.getLog( MadChannelPeriodData.class.getName() );
 
-	private long periodStartFrameTimes;
+	private int U_periodStartFrameTime;
 	private int numFramesThisPeriod;
 
 	public MadChannelPeriodData()
 	{
 	}
 
-	public void reset( final long periodStartFrameTime, final int numFramesThisPeriod )
+	public void reset( final int U_periodStartFrameTime, final int numFramesThisPeriod )
 	{
-		this.periodStartFrameTimes = periodStartFrameTime;
+		this.U_periodStartFrameTime = U_periodStartFrameTime;
 		this.numFramesThisPeriod = numFramesThisPeriod;
 	}
 
-	public long getPeriodStartFrameTimes()
+	public int getU_PeriodStartFrameTime()
 	{
-		return periodStartFrameTimes;
+		return U_periodStartFrameTime;
 	}
 
 	public int getNumFramesThisPeriod()

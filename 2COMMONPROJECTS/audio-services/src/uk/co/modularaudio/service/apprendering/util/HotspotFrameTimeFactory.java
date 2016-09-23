@@ -29,11 +29,11 @@ public class HotspotFrameTimeFactory implements MadFrameTimeFactory
 		// Throw away class for hotspot compilation
 	}
 
-	private long currentUiFrameTime;
+	private int U_currentUiFrameTime;
 
 	@Override
-	public long getCurrentUiFrameTime()
+	public int getCurrentUiFrameTime()
 	{
-		return currentUiFrameTime += 1000;
+		return U_currentUiFrameTime += 1000;
 	}
 }

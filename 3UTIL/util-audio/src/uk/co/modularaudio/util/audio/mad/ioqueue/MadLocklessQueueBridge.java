@@ -79,15 +79,19 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 		return commandToInstanceQueue.writeOne( entry );
 	}
 
-	public final boolean sendTemporalEventToInstance( final I instance, final long guiFrameTime, final IOQueueEvent entry )
+	public final boolean sendTemporalEventToInstance( final I instance,
+			final int U_guiFrameTime,
+			final IOQueueEvent entry )
 	{
 		final MadLocklessIOQueue temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
-		entry.frameTime = guiFrameTime;
+		entry.U_frameTime = U_guiFrameTime;
 		return temporalToInstanceQueue.writeOne( entry );
 	}
 
-	public abstract void receiveQueuedEventsToInstance( I instance, ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp, IOQueueEvent queueEntry );
+	public abstract void receiveQueuedEventsToInstance( I instance,
+			ThreadSpecificTemporaryEventStorage tses,
+			int U_periodTimestamp,
+			IOQueueEvent queueEntry );
 
 	public final void queueCommandEventToUi( final ThreadSpecificTemporaryEventStorage tses,
 			final int command,
@@ -96,7 +100,7 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 	{
 		final IOQueueEvent[] tempQueueEventStorage = tses.commandEventsToUi;
 		final int storageOffset = tses.numCommandEventsToUi;
-		tempQueueEventStorage[ storageOffset ].frameTime = 0;
+		tempQueueEventStorage[ storageOffset ].U_frameTime = 0;
 		tempQueueEventStorage[ storageOffset ].command = command;
 		tempQueueEventStorage[ storageOffset ].value = value;
 		tempQueueEventStorage[ storageOffset ].object = object;
@@ -104,14 +108,14 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 	}
 
 	public final void queueTemporalEventToUi( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
+			final int U_frameTime,
 			final int command,
 			final long value,
 			final Object object )
 	{
 		final IOQueueEvent[] tempQueueEventStorage = tses.temporalEventsToUi;
 		final int storageOffset = tses.numTemporalEventsToUi;
-		tempQueueEventStorage[ storageOffset ].frameTime = frameTime;
+		tempQueueEventStorage[ storageOffset ].U_frameTime = U_frameTime;
 		tempQueueEventStorage[ storageOffset ].command = command;
 		tempQueueEventStorage[ storageOffset ].value = value;
 		tempQueueEventStorage[ storageOffset ].object = object;

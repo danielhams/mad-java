@@ -62,7 +62,10 @@ public class SoundfilePlayer2IOQueueBridge extends MadLocklessQueueBridge<Soundf
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final SoundfilePlayer2MadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SoundfilePlayer2MadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
@@ -110,7 +113,7 @@ public class SoundfilePlayer2IOQueueBridge extends MadLocklessQueueBridge<Soundf
 					instance.resetFramePosition( 0 );
 					instance.addJobForSampleCachingService();
 
-					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, 0, curSample );
+					queueTemporalEventToUi(tses, U_periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, 0, curSample );
 				}
 				break;
 			}
@@ -123,7 +126,7 @@ public class SoundfilePlayer2IOQueueBridge extends MadLocklessQueueBridge<Soundf
 					instance.resetFramePosition( lastFrameNum );
 					instance.addJobForSampleCachingService();
 
-					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, lastFrameNum, curSample );
+					queueTemporalEventToUi(tses, U_periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, lastFrameNum, curSample );
 				}
 				break;
 			}
@@ -136,7 +139,7 @@ public class SoundfilePlayer2IOQueueBridge extends MadLocklessQueueBridge<Soundf
 					instance.resetFramePosition( newPosition );
 					instance.addJobForSampleCachingService();
 
-					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE, newPosition, curSample );
+					queueTemporalEventToUi(tses, U_periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE, newPosition, curSample );
 				}
 				break;
 			}

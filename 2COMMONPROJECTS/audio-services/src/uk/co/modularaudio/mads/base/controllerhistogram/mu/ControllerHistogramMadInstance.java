@@ -42,7 +42,7 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 //	private static Log log = LogFactory.getLog( NoteHistogramMadInstance.class.getName() );
 
 	private int sampleRate;
-	private long lastNoteFrameTime = -1;
+	private int U_lastNoteFrameTime = 0;
 
 	public ControllerHistogramMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -68,7 +68,7 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
+			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -80,9 +80,9 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 		final int numNotes = noteBuffer.numElementsInBuffer;
 		if( numNotes > 0 )
 		{
-			if( lastNoteFrameTime == -1 )
+			if( U_lastNoteFrameTime == 0 )
 			{
-				lastNoteFrameTime = periodStartFrameTime + noteEvents[0].getEventSampleIndex();
+				U_lastNoteFrameTime = U_periodStartFrameTime + noteEvents[0].getEventSampleIndex();
 			}
 			else
 			{
@@ -90,17 +90,17 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 				do
 				{
 					final int noteEventSampleIndex = noteEvents[noteIndex].getEventSampleIndex();
-					final long noteEventFrameTime = periodStartFrameTime + noteEventSampleIndex;
+					final int U_noteEventFrameTime = U_periodStartFrameTime + noteEventSampleIndex;
 
-					final int diff = (int)(noteEventFrameTime - lastNoteFrameTime);
+					final int diff = U_noteEventFrameTime - U_lastNoteFrameTime;
 
 					if( diff > 0 )
 					{
 						sendDiscoveredController( tempQueueEntryStorage,
-								noteEventFrameTime,
+								U_noteEventFrameTime,
 								diff );
 					}
-					lastNoteFrameTime = noteEventFrameTime;
+					U_lastNoteFrameTime = U_noteEventFrameTime;
 					noteIndex++;
 				}
 				while( noteIndex < numNotes );
@@ -112,13 +112,13 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 	}
 
 	private void sendDiscoveredController( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
+			final int U_frameTime,
 			final int noteDiff )
 	{
 		final long asNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, noteDiff );
 
 		localBridge.queueTemporalEventToUi( tses,
-				frameTime,
+				U_frameTime,
 				ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_NANOS,
 				asNanos,
 				null );

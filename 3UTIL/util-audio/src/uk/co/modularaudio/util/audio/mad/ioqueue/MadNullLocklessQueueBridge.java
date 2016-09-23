@@ -32,7 +32,10 @@ public class MadNullLocklessQueueBridge<I extends MadInstance<?, I> >
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final I instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEvent )
+	public void receiveQueuedEventsToInstance( final I instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final int U_periodTimestamp,
+			final IOQueueEvent queueEvent )
 	{
 	}
 }
