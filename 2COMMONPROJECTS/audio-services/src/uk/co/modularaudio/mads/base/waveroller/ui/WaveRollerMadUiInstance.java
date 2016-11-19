@@ -30,6 +30,7 @@ import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerIOQueueBridge;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
 import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerScaleLimitComboUiJComponent.AmpScale;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -53,12 +54,17 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 
 	private float desiredAmpScaleLimitDb = 0.0f;
 
-	private float captureMillis = LogarithmicTimeMillis1To5000SliderModel.DEFAULT_MILLIS;
+	private float lastReceivedCaptureMillis = LogarithmicTimeMillis1To5000SliderModel.DEFAULT_MILLIS;
+	private float lastSetCaptureMillis = lastReceivedCaptureMillis;
+
+	private final CDLowPass24Interpolator captureTimeInterpolator = new CDLowPass24Interpolator();
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
 			final WaveRollerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
+		captureTimeInterpolator.resetLowerUpperBounds( LogarithmicTimeMillis1To5000SliderModel.MIN_MILLIS,
+				LogarithmicTimeMillis1To5000SliderModel.MAX_MILLIS );
 	}
 
 	@Override
@@ -68,6 +74,10 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	{
 		super.receiveStartup(ratesAndLatency, timingParameters, frameTimeFactory);
 		scopeDataListener.receiveStartup( ratesAndLatency, timingParameters );
+
+		// Has a nice smoothing effect
+		captureTimeInterpolator.resetSampleRateAndPeriod( 2000, 0, 0 );
+		captureTimeInterpolator.hardSetValue( lastReceivedCaptureMillis );
 	}
 
 	@Override
@@ -87,6 +97,16 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
 
 		super.doDisplayProcessing( tempEventStorage, timingParameters, U_currentGuiTime, framesSinceLastTick );
+
+		final float[] tmpCaptureMillisArray = new float[1];
+		captureTimeInterpolator.generateControlValues( tmpCaptureMillisArray, 0, 1 );
+		captureTimeInterpolator.checkForDenormal();
+		final float lastCalculatedMillis = tmpCaptureMillisArray[0];
+		if( lastCalculatedMillis != lastSetCaptureMillis )
+		{
+			scopeDataListener.setCaptureTimeMillis( lastCalculatedMillis );
+			lastSetCaptureMillis = lastCalculatedMillis;
+		}
 	}
 
 	@Override
@@ -121,16 +141,13 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	public void setScopeDataListener( final WaveRollerDataListener scopeDataListener )
 	{
 		this.scopeDataListener = scopeDataListener;
-		scopeDataListener.setCaptureTimeMillis( captureMillis );
+		scopeDataListener.setCaptureTimeMillis( lastReceivedCaptureMillis );
 	}
 
 	public void setCaptureTime( final float captureMillis )
 	{
-		this.captureMillis = captureMillis;
-		if( scopeDataListener != null )
-		{
-			scopeDataListener.setCaptureTimeMillis( captureMillis );
-		}
+		this.lastReceivedCaptureMillis = captureMillis;
+		captureTimeInterpolator.notifyOfNewValue( lastReceivedCaptureMillis );
 	}
 
 	public void sendUiActive( final boolean active )
