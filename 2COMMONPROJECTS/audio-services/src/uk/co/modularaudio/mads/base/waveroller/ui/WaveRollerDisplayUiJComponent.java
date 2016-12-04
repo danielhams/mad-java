@@ -95,7 +95,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	@Override
 	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage ,
 			final MadTimingParameters timingParameters ,
-			final int U_currentGuiTime , int framesSinceLastTick )
+			final int U_currentGuiTime , final int framesSinceLastTick )
 	{
 		final boolean showing = isShowing();
 
@@ -244,9 +244,9 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 		final int numReadable = instanceRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 
 		final int spaceAvailable = displayRingBuffer.getNumWriteable();
-		if( spaceAvailable < numReadable )
+		final int spaceToFree = numReadable - spaceAvailable;
+		if( spaceToFree > 0 )
 		{
-			final int spaceToFree = numReadable - spaceAvailable;
 			displayRingBuffer.moveForward( spaceToFree );
 		}
 
