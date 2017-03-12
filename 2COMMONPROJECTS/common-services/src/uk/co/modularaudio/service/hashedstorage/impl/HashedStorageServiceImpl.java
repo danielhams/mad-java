@@ -67,8 +67,6 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		return retVal;
 	}
 
-	private final byte[] storageBuf = new byte[STORAGE_BUFFER_LENGTH];
-
 	@Override
 	public void storeContentsInWarehouse( final HashedWarehouse warehouse, final HashedRef hashedRef, final InputStream contents )
 			throws IOException
@@ -85,6 +83,7 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		final String tmpFilePath = tmpFile.getAbsolutePath();
 		final FileOutputStream fos = new FileOutputStream( tmpFilePath );
 		int numRead = 0;
+		final byte[] storageBuf = new byte[STORAGE_BUFFER_LENGTH];
 		while( (numRead = contents.read( storageBuf ) ) > 0 )
 		{
 			fos.write( storageBuf, 0, numRead );

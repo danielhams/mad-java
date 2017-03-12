@@ -41,7 +41,8 @@ public class LimiterTest extends TestCase
 	private static final float TEST_FALLOFF = 20.0f;
 
 	private static final int NUM_PERF_VALUES = 8192 * 2;
-	private static final int NUM_PERF_LOOPS = 8192 * 10;
+//	private static final int NUM_PERF_LOOPS = 8192 * 10;
+	private static final int NUM_PERF_LOOPS = 1;
 
 	public LimiterTest()
 	{

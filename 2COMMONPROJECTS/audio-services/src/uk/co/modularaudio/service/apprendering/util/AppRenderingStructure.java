@@ -97,6 +97,8 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
  */
 public class AppRenderingStructure implements AppRenderingLifecycleListener
 {
+	private static final long WAIT_FOR_PROF_MILLIS = 100;
+
 	private static Log log = LogFactory.getLog( AppRenderingStructure.class.getName() );
 
 	private final MadComponentService componentService;
@@ -238,6 +240,19 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		{
 			if( rp.isProfilingFilled() )
 			{
+				final RenderingPlanProfileResults tmpProfileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
+				rp.getProfileResults( tmpProfileResults );
+				while( !rp.isProfilingFilled() )
+				{
+					try
+					{
+						Thread.sleep( WAIT_FOR_PROF_MILLIS );
+					}
+					catch( final InterruptedException e )
+					{
+						log.warn(e);
+					}
+				}
 				final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
 				rp.getProfileResults( profileResults );
 				final long clockCallbackStart = profileResults.getClockCallbackStart();

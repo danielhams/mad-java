@@ -27,11 +27,11 @@ public class NumBitsInControllerTester
 //	private static final int NUM_TEST_VALUES = 60;
 //	private static final int NUM_TEST_VALUES = 60 * 2;
 //	private static final int NUM_TEST_VALUES = 300;
-//	private static final int NUM_TEST_VALUES = 1024;
+	private static final int NUM_TEST_VALUES = 1024;
 //	private static final int NUM_TEST_VALUES = 2048;
 //	private static final int NUM_TEST_VALUES = 4192;
 //	private static final int NUM_TEST_VALUES = 8192;
-	private static final int NUM_TEST_VALUES = 8192 * 10;
+//	private static final int NUM_TEST_VALUES = 8192 * 10;
 //	private static final int NUM_TEST_VALUES = 8192 * 50;
 
 //	private static final int NUM_SIGNIFICANT_BITS = 4;

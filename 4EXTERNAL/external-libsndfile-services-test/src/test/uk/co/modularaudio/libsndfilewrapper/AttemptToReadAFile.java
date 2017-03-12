@@ -85,7 +85,7 @@ public class AttemptToReadAFile extends TestCase
 		final File outputDir = outputFile.getParentFile();
 		outputDir.mkdirs();
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 2, sampleRate,
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), numChannels, sampleRate,
 				(short) 16 );
 
 		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / numChannels;
@@ -153,7 +153,7 @@ public class AttemptToReadAFile extends TestCase
 		final File outputDir = outputFile.getParentFile();
 		outputDir.mkdirs();
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 2, sampleRate,
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), numChannels, sampleRate,
 				(short) 16 );
 
 		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / numChannels;

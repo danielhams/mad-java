@@ -45,17 +45,6 @@ public class SpectralAmpGenMadDefinition<D extends SpectralAmpGenMadDefinition<D
 
 	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO };
 
-
-	// Definitions for the FFT
-	public final static int MAX_SAMPLES_PER_STFT = 16384;
-	public final static int MAX_NUM_FFT_BINS = (MAX_SAMPLES_PER_STFT / 2) + 1;
-
-	// STFT parameters
-	public static final int NUM_OVERLAPS = 4;
-	public static final int MAX_WINDOW_LENGTH = 4096;
-
-	public static final int MIN_SAMPLES_FOR_WOLA = MAX_WINDOW_LENGTH / NUM_OVERLAPS;
-
 	public SpectralAmpGenMadDefinition(
 			final String definitionId,
 			final String userVisibleName,

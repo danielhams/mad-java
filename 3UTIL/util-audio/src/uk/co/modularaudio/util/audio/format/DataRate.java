@@ -23,7 +23,7 @@ package uk.co.modularaudio.util.audio.format;
 
 public enum DataRate
 {
-	SR_1024, SR_22050, SR_32000, SR_44100, SR_48000, SR_88200, SR_96000, SR_192000;
+	SR_1024, SR_11025, SR_22050, SR_32000, SR_44100, SR_48000, SR_88200, SR_96000, SR_192000;
 
 	public final static DataRate CD_QUALITY = SR_44100;
 
@@ -33,6 +33,8 @@ public enum DataRate
 		{
 		case SR_1024:
 			return 1024;
+		case SR_11025:
+			return 11025;
 		case SR_22050:
 			return 22050;
 		case SR_32000:

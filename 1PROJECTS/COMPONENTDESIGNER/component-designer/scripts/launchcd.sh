@@ -45,7 +45,7 @@ export AA_OPTIONS="-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 #export GL_OPTIONS="-Dsun.java2d.opengl=True"
 
 #export VM_MEM_OPTS="-Xms256m -Xmx512m"
-#export VM_MEM_OPTS="-Xms512m -Xmx512m"
+export VM_MEM_OPTS="-Xms512m -Xmx512m"
 #export VM_MEM_OPTS="-Xms512m -Xmx1024m"
 
 #export VM_GC_OPTS="-Xincgc"

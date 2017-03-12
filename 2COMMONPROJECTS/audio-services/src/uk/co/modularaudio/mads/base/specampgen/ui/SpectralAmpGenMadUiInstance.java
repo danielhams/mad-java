@@ -150,10 +150,10 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		peakDetectComputer
 	};
 
-	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow blackmanHarrisWindow = new BlackmanHarrisFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow blackmanNuttallWindow = new BlackmanNuttallFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanHarrisWindow = new BlackmanHarrisFftWindow( SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanNuttallWindow = new BlackmanNuttallFftWindow( SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH );
 
 	private WindowChoice desiredWindow = SpectralAmpGenWindowChoiceUiJComponent.DEFAULT_WINDOW_CHOICE;
 
@@ -232,24 +232,19 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		try
 		{
 			final int fftSize = desiredFftSize;
-			final int windowLength = (fftSize >= SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH ?
-					SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH
-					: fftSize);
+			final int windowLength = (fftSize >= SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH
+					? SpectralAmpGenMadUiDefinition.MAX_WINDOW_LENGTH : fftSize);
 			final FftWindow fftWindow = windows[desiredWindow.ordinal()];
 
 			fftWindow.resetWindowLength( windowLength );
 
-			final StftParameters params = new StftParameters( dataRate,
-					1,
-					windowLength,
-					SpectralAmpGenMadDefinition.NUM_OVERLAPS,
-					fftSize,
-					fftWindow );
+			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
+					SpectralAmpGenMadUiDefinition.NUM_OVERLAPS, fftSize, fftWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			oneshotStftProcessor = new OneshotStftProcessor( params, peakAmpAccumulator );
 		}
-		catch (final Exception e)
+		catch( final Exception e )
 		{
 			final String msg = "Exception caught reinitialising frequency processor" + e.toString();
 			log.error( msg, e );
@@ -272,15 +267,15 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	public void consumeQueueEntry( final I instance,
 			final IOQueueEvent nextOutgoingEntry )
 	{
-		switch (nextOutgoingEntry.command)
+		switch( nextOutgoingEntry.command )
 		{
 			case SpectralAmpGenIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
 				final long value = nextOutgoingEntry.value;
-				final int bufferNum = (int) ((value) & 0xFFFFFFFF);
-				final int ringBufferIndex = (int) ((value >> 32) & 0xFFFFFFFF);
+				final int bufferNum = (int)((value) & 0xFFFFFFFF);
+				final int ringBufferIndex = (int)((value >> 32) & 0xFFFFFFFF);
 
-				if (bufferNum == 0)
+				if( bufferNum == 0 )
 				{
 					receiveBufferIndexUpdate( nextOutgoingEntry.U_frameTime, ringBufferIndex );
 				}

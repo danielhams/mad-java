@@ -51,6 +51,23 @@ public class LevelToDbAndBackThrowaway
 				MathFormatter.slowFloatPrint( MIN_14BIT_MIDI_LEVEL, 8, false ) );
 		log.info( "As DB this is " +
 				MathFormatter.slowFloatPrint( MIN_14BIT_MIDI_DB, 8, false ) );
+
+		final float[] testLevelValues = new float[]
+		{
+				0.85f,
+				0.15f,
+				0.97f
+		};
+
+		for( final float f : testLevelValues )
+		{
+			final float dbValue = AudioMath.levelToDbF( f );
+			log.info( "The level (" +
+					MathFormatter.slowFloatPrint( f, 8, false ) +
+					") maps to the dbValue (" +
+					MathFormatter.slowFloatPrint( dbValue, 8, false ) +
+					")");
+		}
 	}
 
 }

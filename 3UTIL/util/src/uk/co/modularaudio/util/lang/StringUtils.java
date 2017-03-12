@@ -65,4 +65,9 @@ public class StringUtils
 		}
 		sb.append( tmpChars );
 	}
+
+	public static boolean isEmpty( final String v )
+	{
+		return v == null || v.length() == 0;
+	}
 }

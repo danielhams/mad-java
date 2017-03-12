@@ -22,9 +22,10 @@ public class FirstWaveletUsage
 
 	private final static String CACHE_ROOT = "wavetablecache";
 
-	private final static float OSC_FREQ = 5000;
-	private final static int NUM_SAMPLES = 512;
-	private final static int SAMPLE_RATE = 40000;
+	private final static float OSC_FREQ = 1000;
+	private final static int NUM_SAMPLES = 256;
+//	private final static int SAMPLE_RATE = 40000;
+	private final static int SAMPLE_RATE = 10 * 1000;
 	private final static int NUM_PASSES = 1;
 
 //	private final static float OSC_AMP = 0.5f;
@@ -44,12 +45,12 @@ public class FirstWaveletUsage
 //		for( int l = 0 ; l < result.length ; ++l )
 //		{
 //			log.debug( "Level " + l + " result is " + resultArrayToString( result[l] ) );
-			log.debug( "Result is " + resultArrayToString( result ) );
+//		log.debug( "Result is " + resultArrayToString( result ) );
 //		}
 		return result;
 	}
 
-	private String resultArrayToString( final double[] ds )
+	private static String resultArrayToString( final double[] ds )
 	{
 		final StringBuilder sb = new StringBuilder(256);
 		sb.append( '[' );
@@ -91,11 +92,15 @@ public class FirstWaveletUsage
 		for( int i = 0 ; i < NUM_PASSES ; ++i )
 		{
 			final long tb = System.nanoTime();
-			t.go( fwt, sampleArray );
+			final double[] result = t.go( fwt, sampleArray );
 			final long ta = System.nanoTime();
 			final long diff = ta-tb;
 			final String diffStr = NanosTimestampFormatter.formatTimestampForLogging( diff, false );
-			log.info( "Pass took " + diffStr + " nanos");
+			if( i % 10 == 0 )
+			{
+				log.info( "Pass took " + diffStr + " nanos");
+				log.debug( "Result is " + resultArrayToString( result ) );
+			}
 		}
 	}
 

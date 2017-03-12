@@ -41,6 +41,12 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 	public final static int FREQ_AXIS_COMPONENT_HEIGHT = 25;
 
 	public static final float MIN_FREQ_DIFF = 8.0f;
+	// Definitions for the FFT
+	public final static int MAX_SAMPLES_PER_STFT = 16384;
+	public final static int MAX_NUM_FFT_BINS = (MAX_SAMPLES_PER_STFT / 2) + 1;
+	// STFT parameters
+	public static final int NUM_OVERLAPS = 4;
+	public static final int MAX_WINDOW_LENGTH = 4096;
 
 	public SpectralAmpGenMadUiDefinition( final D definition,
 			final String imagePrefix,

@@ -26,7 +26,6 @@ import java.util.Arrays;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.util.SpecDataListener;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -109,9 +108,9 @@ public class SpectralPeakGraph extends JPanel
 		setOpaque( true );
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
-		runningBinPeaks = new float[ SpectralAmpGenMadDefinition.MAX_NUM_FFT_BINS ];
-		previousBinPeaks = new float[ SpectralAmpGenMadDefinition.MAX_NUM_FFT_BINS ];
-		computedBins = new float[ SpectralAmpGenMadDefinition.MAX_NUM_FFT_BINS ];
+		runningBinPeaks = new float[ SpectralAmpGenMadUiDefinition.MAX_NUM_FFT_BINS ];
+		previousBinPeaks = new float[ SpectralAmpGenMadUiDefinition.MAX_NUM_FFT_BINS ];
+		computedBins = new float[ SpectralAmpGenMadUiDefinition.MAX_NUM_FFT_BINS ];
 
 		uiInstance.addAmpAxisChangeListener( this );
 		uiInstance.addFreqAxisChangeListener( this );

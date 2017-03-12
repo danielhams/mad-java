@@ -49,7 +49,8 @@ public class DbToLevelChecker
 				-89.9999f,
 				-90.0f,
 				Float.NEGATIVE_INFINITY,
-				-6.01f
+				-6.01f,
+				0.97f
 		};
 
 		for( final float v : testValues )

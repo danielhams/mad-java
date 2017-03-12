@@ -1,0 +1,181 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package uk.co.modularaudio.mads.base.spectralroller.ui;
+
+import java.awt.Component;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.JPanel;
+
+import uk.co.modularaudio.mads.base.spectralroller.mu.SpectralRollerMadDefinition;
+import uk.co.modularaudio.mads.base.spectralroller.mu.SpectralRollerMadInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
+import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.math.MathFormatter;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+
+public class SpectralRollerScaleDisplay extends JPanel
+	implements IMadUiControlInstance<SpectralRollerMadDefinition, SpectralRollerMadInstance, SpectralRollerMadUiInstance>,
+	ScaleLimitChangeListener
+{
+
+//	private static Log log = LogFactory.getLog( WaveRollerScaleDisplay.class.getName() );
+
+	private static final long serialVersionUID = -3625462667737549039L;
+
+	public final static int SCALE_MARGIN = 10;
+
+	private final static int LL_WIDTH = 8;
+
+	private final boolean isLeftDisplay;
+
+	private float currentScaleLimitDb = 0.0f;
+
+	private final FontMetrics fm;
+
+	public SpectralRollerScaleDisplay( final SpectralRollerMadDefinition definition,
+			final SpectralRollerMadInstance instance,
+			final SpectralRollerMadUiInstance uiInstance,
+			final int controlIndex )
+	{
+//		log.debug("Created scale display with index " + controlIndex );
+		isLeftDisplay = ( controlIndex == 2 );
+
+		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+
+		fm = getFontMetrics( getFont() );
+
+		uiInstance.addScaleChangeListener( this );
+	}
+
+	@Override
+	public void paintComponent( final Graphics g )
+	{
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
+		final int width = getWidth();
+		final int height = getHeight();
+
+		// Clear
+		g2d.setColor(  SpectralRollerColours.BACKGROUND_COLOR  );
+		g2d.fillRect( 0, 0, width, height );
+
+		// Draw scale margin
+		g2d.setColor( SpectralRollerColours.SCALE_AXIS_DETAIL );
+		final int x = ( isLeftDisplay ? width - 1 : 0 );
+		final int bottomScaleY = SCALE_MARGIN;
+		final int topScaleY = height - SCALE_MARGIN - 1;
+		g2d.drawLine( x, bottomScaleY, x, topScaleY );
+
+		// Draw three little lines we'll mark against
+		final int midY = height / 2;
+		final int llStartX = ( isLeftDisplay ? width - 1 - LL_WIDTH : 0 );
+		final int llEndX = ( isLeftDisplay ? width - 1 : LL_WIDTH );
+		g2d.drawLine( llStartX, bottomScaleY, llEndX, bottomScaleY );
+
+		final int midBottomY = (bottomScaleY + midY) / 2;
+		g2d.drawLine( llStartX, midBottomY, llEndX, midBottomY );
+
+		g2d.drawLine( llStartX, midY, llEndX, midY );
+
+		final int topMidY = (topScaleY + midY) / 2;
+
+		g2d.drawLine( llStartX, topMidY, llEndX, topMidY );
+
+		g2d.drawLine( llStartX, topScaleY, llEndX, topScaleY );
+
+		// Draw the scale bits
+		final float currentMaxAsAbs = AudioMath.dbToLevelF( currentScaleLimitDb );
+		final float halfwayDb = AudioMath.levelToDbF( currentMaxAsAbs / 2.0f );
+
+		paintScaleText( g2d, width, currentScaleLimitDb, bottomScaleY );
+
+		paintScaleText( g2d, width, halfwayDb, midBottomY );
+
+		paintScaleText( g2d, width, Float.NEGATIVE_INFINITY, midY );
+
+		paintScaleText( g2d, width, halfwayDb, topMidY );
+
+		paintScaleText( g2d, width, currentScaleLimitDb, topScaleY );
+	}
+
+	private final void paintScaleText( final Graphics2D g2d,
+			final int width,
+			final float scaleFloat,
+			final int yOffset )
+	{
+		final int fontHeight = fm.getAscent();
+		final int fontHeightOver2 = fontHeight / 2;
+		final String scaleString = MathFormatter.fastFloatPrint( scaleFloat, 0, false ) + " dB";
+		final char[] bscs = scaleString.toCharArray();
+		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
+		final int charsEndX = ( isLeftDisplay ? width - LL_WIDTH - 2 : LL_WIDTH + 2 + charsWidth );
+		g2d.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
+			final MadTimingParameters timingParameters ,
+			final int U_currentGuiTime , final int framesSinceLastTick  )
+	{
+	}
+
+	@Override
+	public Component getControl()
+	{
+		return this;
+	}
+
+	@Override
+	public void destroy()
+	{
+	}
+
+	@Override
+	public boolean needsDisplayProcessing()
+	{
+		return true;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+	}
+
+	@Override
+	public void receiveScaleLimitChange( final float newMaxDB )
+	{
+		currentScaleLimitDb = newMaxDB;
+		repaint();
+	}
+}

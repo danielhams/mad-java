@@ -118,21 +118,22 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			final int frameOffset,
 			final int numFrames  )
 	{
-		final boolean inConnected = channelConnectedFlags.get( SpectralAmpGenMadDefinition.CONSUMER_IN);
+		final boolean inConnected = channelConnectedFlags.get( SpectralAmpGenMadDefinition.CONSUMER_IN );
 		final MadChannelBuffer inCb = channelBuffers[ SpectralAmpGenMadDefinition.CONSUMER_IN ];
 		final float[] inFloats = inCb.floatBuffer;
 
 		if( desiredActive != active )
 		{
 			// Need to swap over until we run out of fade.
-			final RawLookupTable fadeTable = ( desiredActive ? fadeInTable : fadeOutTable );
+			final RawLookupTable fadeTable = (desiredActive ? fadeInTable : fadeOutTable);
 			final int numLeftInFade = fadeTable.capacity - fadePosition;
-//			log.debug("Have " + numLeftInFade + " left to fade and need " + numFrames + " frames in process");
+			// log.debug("Have " + numLeftInFade + " left to fade and need " +
+			// numFrames + " frames in process");
 
-			final int numThisRound = (numLeftInFade < numFrames ? numLeftInFade : numFrames );
-//			log.debug("Can fade " + numThisRound + " this round");
+			final int numThisRound = (numLeftInFade < numFrames ? numLeftInFade : numFrames);
+			// log.debug("Can fade " + numThisRound + " this round");
 			final int numWithoutFade = numFrames - numThisRound;
-//			log.debug("Filling remaining " + numWithoutFade + " with zeros");
+			// log.debug("Filling remaining " + numWithoutFade + " with zeros");
 
 			final int tmpPosition = 0;
 			final float[] tmpFloats = tempQueueEntryStorage.temporaryFloatArray;
@@ -142,7 +143,7 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			for( int s = 0 ; s < numThisRound ; ++s )
 			{
 				final float fadeVal = fadeTable.getValueAt( fadePosition );
-				tmpFloats[s] *= fadeVal;
+				tmpFloats[ s ] *= fadeVal;
 				fadePosition++;
 			}
 
@@ -156,66 +157,50 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			final int numWritten = dataRingBuffer.backEndWrite( tmpFloats, tmpPosition, numFrames );
 			if( numWritten != numFrames )
 			{
-				log.warn("Missed out on some data in back end write");
+				log.warn( "Missed out on some data in back end write" );
 			}
-			queueWriteIndexUpdate( tempQueueEntryStorage,
-					0,
-					dataRingBuffer.getWritePosition(),
+			queueWriteIndexUpdate( tempQueueEntryStorage, 0, dataRingBuffer.getWritePosition(),
 					U_timestampForIndexUpdate );
 			dataRingBuffer.backEndClearNumSamplesQueued();
 
 			if( fadePosition >= fadeTable.capacity )
 			{
-//				log.debug("Completed fade, switching over active flag");
+				// log.debug("Completed fade, switching over active flag");
 				active = desiredActive;
 			}
 		}
-		else if( active )
+		else if( active && inConnected )
 		{
-			try
+			int curSampleIndex = 0;
+			while( curSampleIndex < numFrames )
 			{
-				if( inConnected )
+				final int U_timestampForIndexUpdate = U_periodStartTimestamp + curSampleIndex;
+
+				if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplePerFrontEndPeriod )
 				{
-					int curSampleIndex = 0;
-					while( curSampleIndex < numFrames )
-					{
-						final int U_timestampForIndexUpdate = U_periodStartTimestamp + curSampleIndex;
-
-						if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplePerFrontEndPeriod )
-						{
-							queueWriteIndexUpdate( tempQueueEntryStorage,
-								0,
-								dataRingBuffer.getWritePosition(),
-								U_timestampForIndexUpdate );
-							dataRingBuffer.backEndClearNumSamplesQueued();
-						}
-
-						final int numLeft = numSamplePerFrontEndPeriod - dataRingBuffer.backEndGetNumSamplesQueued();
-
-						final int numAvailable = numFrames - curSampleIndex;
-						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
-
-						final int spaceAvailable = dataRingBuffer.getNumWriteable();
-
-						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
-
-						if( numToWrite > 0 )
-						{
-							dataRingBuffer.backEndWrite( inFloats, frameOffset + curSampleIndex, numToWrite );
-						}
-						else
-						{
-							break;
-						}
-						curSampleIndex += numThisRound;
-					}
+					queueWriteIndexUpdate( tempQueueEntryStorage, 0, dataRingBuffer.getWritePosition(),
+							U_timestampForIndexUpdate );
+					dataRingBuffer.backEndClearNumSamplesQueued();
 				}
 
-			}
-			catch( final Exception e )
-			{
-				final String msg = "Exception caught processing into ring buffer: " + e.toString();
-				log.error( msg, e );
+				final int numLeft = numSamplePerFrontEndPeriod - dataRingBuffer.backEndGetNumSamplesQueued();
+
+				final int numAvailable = numFrames - curSampleIndex;
+				final int numThisRound = (numLeft > numAvailable ? numAvailable : numLeft);
+
+				final int spaceAvailable = dataRingBuffer.getNumWriteable();
+
+				final int numToWrite = (spaceAvailable > numThisRound ? numThisRound : spaceAvailable);
+
+				if( numToWrite > 0 )
+				{
+					dataRingBuffer.backEndWrite( inFloats, frameOffset + curSampleIndex, numToWrite );
+				}
+				else
+				{
+					break;
+				}
+				curSampleIndex += numThisRound;
 			}
 		}
 

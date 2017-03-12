@@ -59,6 +59,7 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefini
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.spectralroller.mu.SpectralRollerMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
@@ -121,6 +122,7 @@ public class BaseComponentsFactory
 	private ControllerHistogramMadDefinition notehMD;
 	private NoteDebugMadDefinition notedMD;
 	private ControllerToCvMadDefinition con2cvMD;
+	private SpectralRollerMadDefinition specrMD;
 
 	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
 
@@ -214,7 +216,7 @@ public class BaseComponentsFactory
 			addDef( midsideMD );
 			scopesMD = new ScopeSmallMadDefinition( creationContext, classificationService );
 			addDef( scopesMD );
-			scopelMD = new ScopeLargeMadDefinition( creationContext, classificationService);
+			scopelMD = new ScopeLargeMadDefinition( creationContext, classificationService );
 			addDef( scopelMD );
 			atc4MD = new AudioToCv4MadDefinition( creationContext, classificationService );
 			addDef( atc4MD );
@@ -226,6 +228,8 @@ public class BaseComponentsFactory
 			addDef( notedMD );
 			con2cvMD = new ControllerToCvMadDefinition( creationContext, classificationService );
 			addDef( con2cvMD );
+			specrMD = new SpectralRollerMadDefinition( creationContext, classificationService );
+			addDef( specrMD );
 
 			componentService.registerComponentFactory( this );
 
