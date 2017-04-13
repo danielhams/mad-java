@@ -39,16 +39,16 @@
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
-        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:M "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-0.88520813"/>
+        <rackControl name="Gain" value="-4.6548033"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freqshift 361 (19 December 2016).wav|38246"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 104 (10 October 2011).mp3|146417766"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
