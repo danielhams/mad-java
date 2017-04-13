@@ -51,12 +51,27 @@ public class MigLayoutStringHelper
 
 	public MigLayout createMigLayout()
 	{
-		final String layoutConstraintStr = buildConstraintString( layoutConstraints, true );
-		final String columnConstraintStr = buildConstraintString( columnConstraints, false );
-		final String rowConstraintStr = buildConstraintString( rowConstraints, false );
+		final String layoutConstraintStr = buildLayoutStr();
+		final String columnConstraintStr = buildColumnStr();
+		final String rowConstraintStr = buildRowStr();
 
 		final MigLayout retVal = new MigLayout( layoutConstraintStr, columnConstraintStr, rowConstraintStr );
 		return retVal;
+	}
+
+	public String buildLayoutStr()
+	{
+		return buildConstraintString( layoutConstraints, true );
+	}
+
+	public String buildRowStr()
+	{
+		return buildConstraintString( rowConstraints, false );
+	}
+
+	public String buildColumnStr()
+	{
+		return buildConstraintString( columnConstraints, false );
 	}
 
 	private String buildConstraintString( final ArrayList<String> constraintList, final boolean commanSeparated )
