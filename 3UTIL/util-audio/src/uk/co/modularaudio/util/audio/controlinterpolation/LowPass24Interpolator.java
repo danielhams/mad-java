@@ -83,6 +83,7 @@ public class LowPass24Interpolator implements ControlValueInterpolator
 					0.5f,
 					FrequencyFilterMode.LP,
 					sampleRate );
+			Arrays.fill( tmpArray, desVal );
 		}
 	}
 

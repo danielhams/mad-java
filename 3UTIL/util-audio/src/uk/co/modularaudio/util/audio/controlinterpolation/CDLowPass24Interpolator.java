@@ -70,6 +70,7 @@ public class CDLowPass24Interpolator extends AbstractCDLowPassInterpolator
 		for( int i = 0; i < 100 ; ++i )
 		{
 			lowPassFilter( testValues, 0, TEST_VALUES_LENGTH );
+			Arrays.fill( testValues, value );
 		}
 	}
 
