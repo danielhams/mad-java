@@ -20,10 +20,9 @@
 
 package uk.co.modularaudio.util.mvc.displayslider;
 
-
 public class SliderDisplayController
 {
-//	private static Log log = LogFactory.getLog( SliderDisplayController.class.getName() );
+//	private static Log log = LogFactory.getLog( SliderDisplayController.class );
 
 	private SliderDisplayModel sdm;
 

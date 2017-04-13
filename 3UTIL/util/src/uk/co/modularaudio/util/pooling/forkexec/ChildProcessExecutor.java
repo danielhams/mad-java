@@ -56,14 +56,17 @@ public class ChildProcessExecutor
 		catch (final SecurityException se)
 		{
 			log.warn( "Caught se" );
+			wasError = true;
 		}
 		catch (final NullPointerException npe)
 		{
 			log.warn( "Caught npe" );
+			wasError = true;
 		}
 		catch (final IOException ioe)
 		{
 			log.warn( "Caught ioe" );
+			wasError = true;
 		}
 		catch (final Exception e)
 		{
