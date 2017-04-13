@@ -38,7 +38,7 @@ import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView
 public class WaveRollerCaptureLengthSliderUiJComponent
 	implements IMadUiControlInstance<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>
 {
-//	private static Log log = LogFactory.getLog( WaveRollerCaptureLengthSliderUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( WaveRollerCaptureLengthSliderUiJComponent.class );
 
 	private final LogarithmicTimeMillis1To5000SliderModel model;
 	private final SliderDisplayController controller;
@@ -70,6 +70,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
+//				log.debug("Received listener value change to " + newValue );
 				uiInstance.setCaptureTime( newValue );
 			}
 		} );
@@ -82,9 +83,10 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 	}
 
 	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage ,
-			final MadTimingParameters timingParameters ,
-			final int U_currentGuiTime , int framesSinceLastTick )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters,
+			final int U_currentGuiTime,
+			final int framesSinceLastTick )
 	{
 	}
 
@@ -96,12 +98,15 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 	@Override
 	public String getControlValue()
 	{
-		return Float.toString( model.getValue() );
+		final float modelValue = model.getValue();
+//		log.debug("Get control value of " + modelValue );
+		return Float.toString( modelValue );
 	}
 
 	@Override
 	public void receiveControlValue( final String valueStr )
 	{
+//		log.debug("Received control value change to " + valueStr );
 		final float asFloat = Float.parseFloat( valueStr );
 		controller.setValue( this, asFloat );
 	}

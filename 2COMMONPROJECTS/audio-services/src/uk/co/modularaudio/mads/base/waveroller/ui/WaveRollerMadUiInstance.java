@@ -43,7 +43,7 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMil
 public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<WaveRollerMadDefinition, WaveRollerMadInstance>
 	implements IOQueueEventUiConsumer<WaveRollerMadInstance>
 {
-	private static Log log = LogFactory.getLog( WaveRollerMadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( WaveRollerMadUiInstance.class );
 
 	// Maximum to buffer in entirety is five seconds
 	public static final float MAX_CAPTURE_MILLIS = 5000.0f;
@@ -78,6 +78,7 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 		// Has a nice smoothing effect
 		captureTimeInterpolator.resetSampleRateAndPeriod( 2000, 0, 0 );
 		captureTimeInterpolator.hardSetValue( lastReceivedCaptureMillis );
+//		log.debug( "Hard set capture millis to " + lastReceivedCaptureMillis );
 	}
 
 	@Override
@@ -146,6 +147,7 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 
 	public void setCaptureTime( final float captureMillis )
 	{
+//		log.debug( "Received setCaptureTime of " + captureMillis );
 		this.lastReceivedCaptureMillis = captureMillis;
 		captureTimeInterpolator.notifyOfNewValue( lastReceivedCaptureMillis );
 	}

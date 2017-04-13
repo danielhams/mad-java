@@ -42,7 +42,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,WaveRollerMadInstance>
 {
-	private static Log log = LogFactory.getLog( WaveRollerMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( WaveRollerMadInstance.class );
 
 	protected boolean active;
 
