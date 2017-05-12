@@ -25,26 +25,39 @@ public class ThreeTuple<A,B,C>
 	private A head;
 	private B middle;
 	private C tail;
-	
-	public ThreeTuple(A a, B b, C c)
+
+	public ThreeTuple(final A a, final B b, final C c)
 	{
 		this.head = a;
 		this.middle = b;
 		this.tail = c;
 	}
-	
+
 	public A getHead()
 	{
 		return head;
 	}
-	
+
 	public B getMiddle()
 	{
 		return middle;
 	}
-	
+
 	public C getTail()
 	{
 		return tail;
+	}
+
+	public void setHead( final A v )
+	{
+		head = v;
+	}
+	public void setMiddle( final B v )
+	{
+		middle = v;
+	}
+	public void setTail( final C v )
+	{
+		tail = v;
 	}
 }

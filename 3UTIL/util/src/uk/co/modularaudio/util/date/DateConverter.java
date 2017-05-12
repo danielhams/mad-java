@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author dan
@@ -45,6 +46,8 @@ public class DateConverter
 
 	public final static String MA_USER_DATE_TIME_MILLIS_FORMAT =
 			MA_USER_DATE_FORMAT + " " + MA_USER_TIME_MILLIS_FORMAT;
+
+	public final static String MA_FULL_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     /**
 	 * <P>Convert an incoming date string from the database to a java.util.Date object.</P>
@@ -337,5 +340,11 @@ public class DateConverter
 	public static String javaDateToUserTimestampStr( final java.util.Date inDate)
 	{
 		return(javaDateToCustomDateTimeStr( inDate, MA_USER_DATE_TIME_MILLIS_FORMAT));
+	}
+
+
+	public static String javaDateToFullDateTimeStr( final Date inDate )
+	{
+		return(javaDateToCustomDateTimeStr( inDate, MA_FULL_DATE_FORMAT));
 	}
 }

@@ -51,4 +51,14 @@ public class ArrayUtils
 			array[right] = val;
 		}
 	}
+
+	public static void reverse( final double[] array )
+	{
+		for( int left = 0, right = array.length - 1 ; left < right ; left++, right-- )
+		{
+			final double val = array[left];
+			array[left] = array[right];
+			array[right] = val;
+		}
+	}
 }

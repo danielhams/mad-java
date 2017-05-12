@@ -38,4 +38,14 @@ public class MathDefines
 	public static final float LOG_2_F = (float)LOG_2_D;
 
 	public static final float MIN_AUDIO_FLOAT_AMP = Float.MIN_VALUE * 5000;
+
+	public final static double degreesToRadians( final double d )
+	{
+		return (Math.PI / 180.0) * d;
+	}
+
+	public final static double radiansToDegrees( final double r )
+	{
+		return r * (180.0 / Math.PI);
+	}
 }
