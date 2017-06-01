@@ -20,10 +20,10 @@
 
 package uk.co.modularaudio.util.swing.colouredtoggle;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-public class ColouredTextToggleMouseListener implements MouseListener
+public class ColouredTextToggleMouseListener extends MouseAdapter
 {
 	private final ColouredTextToggle originCtt;
 
@@ -33,29 +33,11 @@ public class ColouredTextToggleMouseListener implements MouseListener
 	}
 
 	@Override
-	public void mouseClicked( final MouseEvent e )
-	{
-		originCtt.receiveClick();
-	}
-
-	@Override
-	public void mousePressed( final MouseEvent e )
-	{
-	}
-
-	@Override
 	public void mouseReleased( final MouseEvent e )
 	{
+		if( originCtt.contains( e.getPoint() ) )
+		{
+			originCtt.receiveClick();
+		}
 	}
-
-	@Override
-	public void mouseEntered( final MouseEvent e )
-	{
-	}
-
-	@Override
-	public void mouseExited( final MouseEvent e )
-	{
-	}
-
 }

@@ -36,7 +36,7 @@ public class ColouredLabelToggle extends JPanel
 {
 	private static final long serialVersionUID = -5831939172181474089L;
 
-//	private static Log log = LogFactory.getLog( ColouredLabelToggle.class.getName() );
+//	private static Log LOG = LogFactory.getLog( ColouredLabelToggle.class.getName() );
 
 	private static final int LABEL_BORDER_WIDTH = 1;
 	private static final int CLICKABLE_BOX_WIDTH = 20;
