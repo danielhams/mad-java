@@ -38,18 +38,18 @@ public class ColouredLabelToggle extends JPanel
 
 //	private static Log LOG = LogFactory.getLog( ColouredLabelToggle.class.getName() );
 
-	private static final int LABEL_BORDER_WIDTH = 1;
-	private static final int CLICKABLE_BOX_WIDTH = 20;
+	protected static final int LABEL_BORDER_WIDTH = 1;
+	protected static final int CLICKABLE_BOX_WIDTH = 20;
 
-	private final Color backgroundColour;
-	private final Color surroundColour;
+	protected final Color backgroundColour;
+	protected final Color surroundColour;
 
-	private final LWTCLabel label;
+	protected final LWTCLabel label;
 
-	private boolean active = false;
+	protected boolean active = false;
 
-	private final ToggleReceiver toggleReceiver;
-	private final int toggleId;
+	protected final ToggleReceiver toggleReceiver;
+	protected final int toggleId;
 
 	public ColouredLabelToggle( final String defaultText,
 			final String tooltipText,

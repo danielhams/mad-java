@@ -45,11 +45,11 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.182612"/>
+        <rackControl name="Gain" value="-7.3703666"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 118 Peppelino master.mp3|154937840"/>
-        <rackControl name="SpeedSlider" value="101.0"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/20150801/6759707_Landslide_Original_Mix.mp3|4840861"/>
+        <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="ZoomToggleGroup" value="2"/>
@@ -111,7 +111,7 @@
             <rackComponent name="Wet Mixdown" definitionId="imixer3">
                 <rackPosition column="1" row="4"/>
                 <rackControl name="Master Lane" value="0.0:0.0"/>
-                <rackControl name="Mixer Lane 0" value="7.0:0.0:  "/>
+                <rackControl name="Mixer Lane 0" value="5.0:0.0:  "/>
                 <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
                 <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
             </rackComponent>
@@ -163,7 +163,7 @@
                 <rackControl name="Mixer Lane 4" value="-Infinity:0.0:  "/>
                 <rackControl name="Mixer Lane 5" value="-Infinity:0.0:  "/>
                 <rackControl name="Mixer Lane 6" value="-Infinity:0.0:  "/>
-                <rackControl name="Mixer Lane 7" value="0.0:0.0:M "/>
+                <rackControl name="Mixer Lane 7" value="0.0:0.0:MS"/>
             </rackComponent>
             <rackComponent name="WetDryMixer" definitionId="cross_fader">
                 <rackPosition column="2" row="1"/>
@@ -252,7 +252,7 @@
         </rack>
     </rackComponent>
     <rackComponent name="Wave Roller 1" definitionId="wave_roller">
-        <rackPosition column="2" row="12"/>
+        <rackPosition column="2" row="11"/>
         <rackControl name="CaptureTime" value="5000.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Left Scale" value=""/>

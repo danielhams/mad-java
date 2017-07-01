@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-interface LWTCLabelColours
+public interface LWTCLabelColours
 {
 
 	Color getBackground();
