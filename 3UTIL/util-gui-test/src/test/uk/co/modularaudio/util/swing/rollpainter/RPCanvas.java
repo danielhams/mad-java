@@ -35,28 +35,28 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeL
 public class RPCanvas extends PacPanel implements ValueChangeListener
 {
 	private static final long serialVersionUID = -2651829740846756379L;
-	
+
 //	private static Log log = LogFactory.getLog( RPCanvas.class.getName() );
-	
-	private SampleFactory sampleFactory;
-	private RollPainter<Buffer, BufferClearer> rollPainter;
-	
+
+	private final SampleFactory sampleFactory;
+	private final RollPainter<Buffer, BufferClearer> rollPainter;
+
 //	private BufferStrategy bufferStrategy;
-	
+
 //	private final RPGestureRecogniser gestureRecogniser;
-	
+
 	public RPCanvas() throws DatastoreException
 	{
 		this.setMinimumSize( new Dimension( RPConstants.RP_CANVAS_WIDTH * 3, RPConstants.RP_CANVAS_HEIGHT + 40 ) );
 		this.setBackground(  Color.black  );
-		
+
 		sampleFactory = new SampleFactory( this );
 		rollPainter = new RollPainter<Buffer, BufferClearer>( RPConstants.RP_CANVAS_WIDTH, sampleFactory );
 //		gestureRecogniser = new RPGestureRecogniser( this );
 	}
-	
+
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		// message from the speed slider
 //		log.debug("Received value change: " + newValue );
@@ -71,7 +71,7 @@ public class RPCanvas extends PacPanel implements ValueChangeListener
 			paintImmediately( getVisibleRect() );
 		}
 	}
-	
+
 //	@Override
 //	public void paint( Graphics g )
 //	{
@@ -96,7 +96,7 @@ public class RPCanvas extends PacPanel implements ValueChangeListener
 //	}
 
 	@Override
-	protected void paintComponent( Graphics g )
+	protected void paintComponent( final Graphics g )
 	{
 		g.setColor( Color.BLACK );
 		g.fillRect( 0, 0, getWidth(), getHeight() );
@@ -110,11 +110,11 @@ public class RPCanvas extends PacPanel implements ValueChangeListener
 			g.drawImage( rollPainter.buffer1.image, rollPainter.buffer1XOffset + RPConstants.RP_CANVAS_WIDTH, 20, null );
 //			log.debug("buffer1Visible");
 		}
-		
+
 		g.setColor( Color.GREEN );
 		g.drawRect( RPConstants.RP_CANVAS_WIDTH, 0, RPConstants.RP_CANVAS_WIDTH-1, 39 );
 		g.drawRect( RPConstants.RP_CANVAS_WIDTH, RPConstants.RP_CANVAS_HEIGHT, RPConstants.RP_CANVAS_WIDTH-1, 39 );
 	}
-	
+
 
 }

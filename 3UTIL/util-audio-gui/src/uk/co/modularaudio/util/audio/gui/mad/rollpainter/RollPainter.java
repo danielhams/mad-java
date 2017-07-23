@@ -229,7 +229,7 @@ public class RollPainter<RPBT, RPBTClearer extends RollPainterBufferClearer<RPBT
 				buffer0XOffset -= numViewingSamples * 2;
 				bufferClearer.clearBuffer( 0, buffer0 );
 			}
-			else if( buffer1XOffset >= numViewingSamples )
+			if( buffer1XOffset >= numViewingSamples )
 			{
 				buffer1XOffset -= numViewingSamples * 2;
 				bufferClearer.clearBuffer( 1, buffer1 );

@@ -41,8 +41,8 @@
         <rackControl name="Gain" value="-5.805387"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 290 (25 May 2015).mp3|4140179"/>
-        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 290 (25 May 2015).mp3|1366547"/>
+        <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="ZoomToggleGroup" value="2"/>
@@ -60,13 +60,6 @@
         <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
-    </rackComponent>
-    <rackComponent name="Spectral Roll 12" definitionId="spectral_roll">
-        <rackPosition column="0" row="6"/>
-        <rackControl name="Amp Scale" value="8192"/>
-        <rackControl name="Display" value=""/>
-        <rackControl name="Freq Scale" value="Log"/>
-        <rackControl name="Resolution" value="Log"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
         <rackPosition column="2" row="9"/>
@@ -87,7 +80,6 @@
     <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 1" consumerRackComponentName="MasterOutReplacer" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 1" consumerRackComponentName="Roll Painter Test 16" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp 11" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Roll 12" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 2" consumerRackComponentName="MasterOutReplacer" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="ThreeWayEqAndCompression" producerChannelName="Output Channel 1" consumerRackComponentName="Cross Fader 13" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="ThreeWayEqAndCompression" producerChannelName="Output Channel 2" consumerRackComponentName="Cross Fader 13" consumerChannelName="Input Channel 2 Right"/>
