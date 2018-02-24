@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.mu;
+package uk.co.modularaudio.mads.base.djeq3.mu;
 
 import java.util.Map;
 
@@ -37,8 +37,8 @@ import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefini
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class DJEQ2MadDefinition
-	extends AbstractNonConfigurableMadDefinition<DJEQ2MadDefinition, DJEQ2MadInstance>
+public class DJEQ3MadDefinition
+	extends AbstractNonConfigurableMadDefinition<DJEQ3MadDefinition, DJEQ3MadInstance>
 	implements BaseMadDefinition
 {
 	// Indexes into the channels
@@ -46,14 +46,21 @@ public class DJEQ2MadDefinition
 	public final static int CONSUMER_WAVE_RIGHT = 1;
 	public final static int PRODUCER_WAVE_LEFT = 2;
 	public final static int PRODUCER_WAVE_RIGHT = 3;
-	public final static int NUM_CHANNELS = 4;
+	public final static int PRODUCER_LOW_LEFT = 4;
+	public final static int PRODUCER_LOW_RIGHT = 5;
+	public final static int PRODUCER_MID_LEFT = 6;
+	public final static int PRODUCER_MID_RIGHT = 7;
+	public final static int PRODUCER_HIGH_LEFT = 8;
+	public final static int PRODUCER_HIGH_RIGHT = 9;
 
-	public static final String DEFINITION_ID = "djeq2";
+	public final static int NUM_CHANNELS = PRODUCER_HIGH_RIGHT+1;
 
-	private final static String USER_VISIBLE_NAME = "DJ EQ2";
+	public static final String DEFINITION_ID = "djeq3";
+
+	private final static String USER_VISIBLE_NAME = "DJ EQ 3 Way";
 
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String CLASS_NAME = "DJ EQ2";
+	private final static String CLASS_NAME = "DJ EQ 3 Way";
 	private final static String CLASS_DESC = "A DJ equaliser unit with 3 bands and volume fader";
 
 	// These must match the channel indexes given above
@@ -61,10 +68,22 @@ public class DJEQ2MadDefinition
 		"Input Wave Left",
 		"Input Wave Right",
 		"Output Wave Left",
-		"Output Wave Right"
+		"Output Wave Right",
+		"Output Low Left",
+		"Output Low Rigth",
+		"Output Mid Left",
+		"Output Mid Rigth",
+		"Output High Left",
+		"Output High Rigth",
 		};
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
@@ -75,10 +94,22 @@ public class DJEQ2MadDefinition
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
+		MadChannelPosition.STEREO_LEFT,
+		MadChannelPosition.STEREO_RIGHT,
+		MadChannelPosition.STEREO_LEFT,
+		MadChannelPosition.STEREO_RIGHT,
+		MadChannelPosition.STEREO_LEFT,
+		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
@@ -87,7 +118,7 @@ public class DJEQ2MadDefinition
 
 	private final BaseComponentsCreationContext creationContext;
 
-	public DJEQ2MadDefinition( final BaseComponentsCreationContext creationContext,
+	public DJEQ3MadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,
@@ -96,7 +127,7 @@ public class DJEQ2MadDefinition
 						CLASS_NAME,
 						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				new DJEQ2IOQueueBridge(),
+				new DJEQ3IOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,
 				CHAN_TYPES,
@@ -109,7 +140,7 @@ public class DJEQ2MadDefinition
 	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
 			throws MadProcessingException
 	{
-		return new DJEQ2MadInstance(
+		return new DJEQ3MadInstance(
 				creationContext,
 				instanceName,
 				this,

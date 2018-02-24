@@ -20,11 +20,16 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
 
 public class ButterworthCrossover24DB
 {
+	private final static Log LOG = LogFactory.getLog( ButterworthCrossover24DB.class );
+
 	private final float[] lpFeedbackDelaySamples = new float[4];
 	private final float[] hpFeedbackDelaySamples = new float[4];
 
@@ -101,6 +106,7 @@ public class ButterworthCrossover24DB
 	{
 		// Will do for now
 		recompute( sampleRate, frequency );
+
 		for( int i = 0 ; i < length ; ++i )
 		{
 			final float inputFloat = input[offset + i];
@@ -135,6 +141,23 @@ public class ButterworthCrossover24DB
 
 			hpFeedbackDelaySamples[3] = hpFeedbackDelaySamples[2];
 			hpFeedbackDelaySamples[2] = hpW2;
+		}
+		for( int i = 0 ; i < lpFeedbackDelaySamples.length ; ++i )
+		{
+			final float lpVal = lpFeedbackDelaySamples[i];
+			final float lpAbsVal = lpVal < 0.0f ? -lpVal : lpVal;
+			final boolean lpTooSmall = lpAbsVal < AudioMath.MIN_SIGNED_FLOATING_POINT_32BIT_VAL_F;
+			if( lpTooSmall )
+			{
+				lpFeedbackDelaySamples[i] = 0.0f;
+			}
+			final float hpVal = hpFeedbackDelaySamples[i];
+			final float hpAbsVal = hpVal < 0.0f ? -hpVal : hpVal;
+			final boolean hpTooSmall = hpAbsVal < AudioMath.MIN_SIGNED_FLOATING_POINT_32BIT_VAL_F;
+			if( hpTooSmall )
+			{
+				hpFeedbackDelaySamples[i] = 0.0f;
+			}
 		}
 	}
 

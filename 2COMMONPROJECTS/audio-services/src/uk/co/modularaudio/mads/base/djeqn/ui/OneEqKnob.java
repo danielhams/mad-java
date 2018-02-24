@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeqn.ui;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

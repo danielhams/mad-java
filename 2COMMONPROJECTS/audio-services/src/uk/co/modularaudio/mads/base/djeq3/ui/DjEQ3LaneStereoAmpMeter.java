@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
 import java.awt.Color;
 
@@ -28,20 +28,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.common.ampmeter.DPAmpMeter;
+import uk.co.modularaudio.mads.base.djeqn.ui.AmpMeterMarks;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class LaneStereoAmpMeter extends JPanel
+public class DjEQ3LaneStereoAmpMeter extends JPanel
 {
 	private static final long serialVersionUID = 1358562457507980606L;
 
-	private static Log log = LogFactory.getLog( LaneStereoAmpMeter.class.getName() );
+	private static Log log = LogFactory.getLog( DjEQ3LaneStereoAmpMeter.class.getName() );
 
 	private final DPAmpMeter leftMeter;
 	private final AmpMeterMarks meterMarks;
 	private final DPAmpMeter rightMeter;
 
-	public LaneStereoAmpMeter( final DJEQ2MadUiInstance uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
+	public DjEQ3LaneStereoAmpMeter( final DJEQ3MadUiInstance uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
 		super();
 		setOpaque( false );

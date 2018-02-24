@@ -23,13 +23,13 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
-import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
 
-public class TestCreateDJEQ
+public class TestCreateDJEQ3Way
 {
 	private final GenericComponentVisualiser gcv;
 
-	public TestCreateDJEQ() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	public TestCreateDJEQ3Way() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		gcv = new GenericComponentVisualiser();
 	}
@@ -37,13 +37,13 @@ public class TestCreateDJEQ
 	protected void go() throws Exception
 	{
 		gcv.setUp();
-		gcv.testAndShowComponent( DJEQMadDefinition.DEFINITION_ID );
+		gcv.testAndShowComponent( DJEQ3MadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
 	public static void main( final String[] args ) throws Exception
 	{
-		final TestCreateDJEQ tc = new TestCreateDJEQ();
+		final TestCreateDJEQ3Way tc = new TestCreateDJEQ3Way();
 		tc.go();
 	}
 }

@@ -18,24 +18,24 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
-import uk.co.modularaudio.mads.base.djeq2.ui.OneEqKill.ToggleListener;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadInstance;
+import uk.co.modularaudio.mads.base.djeqn.ui.OneEqKill.ToggleListener;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 
 
-public class DJEQ2MidEQLane extends DJEQ2OneEQLane implements ValueChangeListener
+public class DJEQ3MidEQLane extends DJEQ3OneEQLane implements ValueChangeListener
 {
 	private static final long serialVersionUID = 4164721930545400401L;
 
-	private final DJEQ2MadUiInstance uiInstance;
+	private final DJEQ3MadUiInstance uiInstance;
 
-	public DJEQ2MidEQLane( final DJEQ2MadDefinition definition,
-			final DJEQ2MadInstance instance,
-			final DJEQ2MadUiInstance uiInstance,
+	public DJEQ3MidEQLane( final DJEQ3MadDefinition definition,
+			final DJEQ3MadInstance instance,
+			final DJEQ3MadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		super( definition, instance, uiInstance, controlIndex, "Mid" );

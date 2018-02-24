@@ -18,14 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2IOQueueBridge;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3IOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -35,10 +35,10 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<DJEQ2MadDefinition, DJEQ2MadInstance>
-	implements IOQueueEventUiConsumer<DJEQ2MadInstance>
+public class DJEQ3MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<DJEQ3MadDefinition, DJEQ3MadInstance>
+	implements IOQueueEventUiConsumer<DJEQ3MadInstance>
 {
-	private static Log log = LogFactory.getLog( DJEQ2MadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( DJEQ3MadUiInstance.class.getName() );
 
 	private long framesBetweenPeakReset;
 
@@ -51,10 +51,10 @@ public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	private float curLowAmp = 1.0f;
 	private boolean curLowKilled = false;
 
-	private LaneStereoAmpMeter meter;
+	private DjEQ3LaneStereoAmpMeter meter;
 
-	public DJEQ2MadUiInstance( final DJEQ2MadInstance instance,
-			final DJEQ2MadUiDefinition uiDefinition )
+	public DJEQ3MadUiInstance( final DJEQ3MadInstance instance,
+			final DJEQ3MadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
@@ -83,12 +83,12 @@ public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	}
 
 	@Override
-	public void consumeQueueEntry( final DJEQ2MadInstance instance,
+	public void consumeQueueEntry( final DJEQ3MadInstance instance,
 			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
-			case DJEQ2IOQueueBridge.COMMAND_OUT_METER_READINGS:
+			case DJEQ3IOQueueBridge.COMMAND_OUT_METER_READINGS:
 			{
 				final int U_timestamp = nextOutgoingEntry.U_frameTime;
 				final long val = nextOutgoingEntry.value;
@@ -137,7 +137,7 @@ public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	{
 		final float ampToSend = ( curHighKilled ? 0.0f : curHighAmp );
 		final long lValue = Float.floatToIntBits( ampToSend );
-		sendTemporalValueToInstance( DJEQ2IOQueueBridge.COMMAND_IN_HP_AMP, lValue );
+		sendTemporalValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_HP_AMP, lValue );
 	}
 
 	public void setMidAmp( final float actualValue )
@@ -162,7 +162,7 @@ public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	{
 		final float ampToSend = ( curMidKilled ? 0.0f : curMidAmp );
 		final long lValue = Float.floatToIntBits( ampToSend );
-		sendTemporalValueToInstance( DJEQ2IOQueueBridge.COMMAND_IN_BP_AMP, lValue );
+		sendTemporalValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_BP_AMP, lValue );
 	}
 
 	public void setLowAmp( final float actualValue )
@@ -187,22 +187,22 @@ public class DJEQ2MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	{
 		final float ampToSend = ( curLowKilled ? 0.0f : curLowAmp );
 		final long lValue = Float.floatToIntBits( ampToSend );
-		sendTemporalValueToInstance( DJEQ2IOQueueBridge.COMMAND_IN_LP_AMP, lValue );
+		sendTemporalValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_LP_AMP, lValue );
 	}
 
 	public void setFaderAmp( final float faderAmp )
 	{
 		final long lValue = Float.floatToIntBits( faderAmp );
-		sendTemporalValueToInstance( DJEQ2IOQueueBridge.COMMAND_IN_FADER_AMP, lValue );
+		sendTemporalValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_FADER_AMP, lValue );
 	}
 
-	public void setStereoAmpMeter( final LaneStereoAmpMeter meter )
+	public void setStereoAmpMeter( final DjEQ3LaneStereoAmpMeter meter )
 	{
 		this.meter = meter;
 	}
 
 	public void sendUiActive( final boolean active )
 	{
-		sendCommandValueToInstance( DJEQ2IOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0) );
+		sendCommandValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0) );
 	}
 }

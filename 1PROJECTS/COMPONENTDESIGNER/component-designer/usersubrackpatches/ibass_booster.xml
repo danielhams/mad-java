@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Bass Boost Rack" cols="4" rows="20">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Crossover 1" rackComponentChannelInstanceName="Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="In" rackComponentChannelInstanceName="Input Wave 0"/>
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Low" rackComponentChannelInstanceName="Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Low" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Crossover 1" rackComponentChannelInstanceName="Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Wet Mixdown" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Wet Mixdown" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="High" definitionId="frequency_filter">
-        <rackPosition column="2" row="2"/>
-        <rackControl name="Bandwidth" value="500.0"/>
-        <rackControl name="Filter Type" value="High Pass"/>
+    <rackComponent name="Crossover 1" definitionId="crossover">
+        <rackPosition column="1" row="2"/>
         <rackControl name="Knee" value="80.0"/>
         <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
@@ -21,13 +17,6 @@
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
         <rackControl name="ScaleChoice" value="-5dB"/>
-    </rackComponent>
-    <rackComponent name="Low" definitionId="frequency_filter">
-        <rackPosition column="0" row="2"/>
-        <rackControl name="Bandwidth" value="500.0"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Knee" value="80.0"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Out" definitionId="wave_roller">
         <rackPosition column="2" row="0"/>
@@ -44,9 +33,9 @@
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
-    <rackLink producerRackComponentName="High" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Left"/>
-    <rackLink producerRackComponentName="High" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Right"/>
-    <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Crossover 1" producerChannelName="Output Wave High Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Crossover 1" producerChannelName="Output Wave High Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Crossover 1" producerChannelName="Output Wave Low Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Crossover 1" producerChannelName="Output Wave Low Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Wet Mixdown" producerChannelName="Output Wave Left" consumerRackComponentName="Out" consumerChannelName="Input Wave 0"/>
 </rack>

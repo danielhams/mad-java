@@ -18,20 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
 import java.awt.Component;
 
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadInstance;
+import uk.co.modularaudio.mads.base.djeqn.ui.OneEqKill;
+import uk.co.modularaudio.mads.base.djeqn.ui.OneEqKnob;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class DJEQ2OneEQLane extends PacPanel
-	implements IMadUiControlInstance<DJEQ2MadDefinition,DJEQ2MadInstance,DJEQ2MadUiInstance>
+public class DJEQ3OneEQLane extends PacPanel
+	implements IMadUiControlInstance<DJEQ3MadDefinition,DJEQ3MadInstance,DJEQ3MadUiInstance>
 {
 	private static final long serialVersionUID = -112893137724675530L;
 
@@ -41,9 +43,9 @@ public class DJEQ2OneEQLane extends PacPanel
 
 	private final OneEqKill killToggle;
 
-	public DJEQ2OneEQLane( final DJEQ2MadDefinition definition,
-			final DJEQ2MadInstance instance,
-			final DJEQ2MadUiInstance uiInstance,
+	public DJEQ3OneEQLane( final DJEQ3MadDefinition definition,
+			final DJEQ3MadInstance instance,
+			final DJEQ3MadUiInstance uiInstance,
 			final int controlIndex,
 			final String eqLabel )
 	{

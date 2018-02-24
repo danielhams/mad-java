@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -26,8 +26,10 @@ import java.awt.Component;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadInstance;
+import uk.co.modularaudio.mads.base.djeqn.ui.ColorDefines;
+import uk.co.modularaudio.mads.base.djeqn.ui.FaderMarks;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -43,26 +45,26 @@ import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayText
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
-public class DJEQ2FaderMarksMeter extends PacPanel
-	implements IMadUiControlInstance<DJEQ2MadDefinition, DJEQ2MadInstance, DJEQ2MadUiInstance>
+public class DJEQ3FaderMarksMeter extends PacPanel
+	implements IMadUiControlInstance<DJEQ3MadDefinition, DJEQ3MadInstance, DJEQ3MadUiInstance>
 {
 	private static final long serialVersionUID = -4624215012389837804L;
 
-	private static Log log = LogFactory.getLog( DJEQ2FaderMarksMeter.class.getName() );
+	private static Log log = LogFactory.getLog( DJEQ3FaderMarksMeter.class.getName() );
 
 	private final static LWTCSliderViewColors SLIDER_COLORS = getSliderColours();
 
 	private final static LWTCSliderViewColors getSliderColours()
 	{
-		final Color bgColor = DJEQ2ColorDefines.BACKGROUND_COLOR;
-		final Color fgColor = DJEQ2ColorDefines.FOREGROUND_COLOR;
-		final Color indicatorColor = DJEQ2ColorDefines.INDICATOR_COLOR;
+		final Color bgColor = ColorDefines.BACKGROUND_COLOR;
+		final Color fgColor = ColorDefines.FOREGROUND_COLOR;
+		final Color indicatorColor = ColorDefines.INDICATOR_COLOR;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
 		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
-		final Color labelColor = DJEQ2ColorDefines.LABEL_COLOR;
-		final Color unitsColor = DJEQ2ColorDefines.UNITS_COLOR;
+		final Color labelColor = ColorDefines.LABEL_COLOR;
+		final Color unitsColor = ColorDefines.UNITS_COLOR;
 
 		return new LWTCSliderViewColors( bgColor,
 				fgColor,
@@ -75,20 +77,20 @@ public class DJEQ2FaderMarksMeter extends PacPanel
 				unitsColor );
 	}
 
-	private final DJEQ2MadUiInstance uiInstance;
+	private final DJEQ3MadUiInstance uiInstance;
 
 	private final DJDeckFaderSliderModel sdm;
 	private final SliderDisplayController sdc;
 	private final LWTCSliderDisplaySlider fader;
-	private final DJEQ2FaderMarks faderMarks;
-	private final LaneStereoAmpMeter sam;
+	private final FaderMarks faderMarks;
+	private final DjEQ3LaneStereoAmpMeter sam;
 	private final LWTCSliderDisplayTextbox faderTextbox;
 
 	private boolean previouslyShowing;
 
-	public DJEQ2FaderMarksMeter( final DJEQ2MadDefinition definition,
-			final DJEQ2MadInstance instance,
-			final DJEQ2MadUiInstance uiInstance,
+	public DJEQ3FaderMarksMeter( final DJEQ3MadDefinition definition,
+			final DJEQ3MadInstance instance,
+			final DJEQ3MadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
@@ -108,11 +110,11 @@ public class DJEQ2FaderMarksMeter extends PacPanel
 		fader = new LWTCSliderDisplaySlider( sdm, sdc, DisplayOrientation.VERTICAL, SLIDER_COLORS, false, true );
 		this.add( fader, "cell 0 0, growy, pushy 100" );
 
-		faderMarks = new DJEQ2FaderMarks( sdm, Color.BLACK, false );
+		faderMarks = new FaderMarks( sdm, Color.BLACK, false );
 		this.add( faderMarks, "cell 1 0, growy, pushy 100" );
 
-		sam = new LaneStereoAmpMeter( uiInstance,
-				((DJEQ2MadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator(),
+		sam = new DjEQ3LaneStereoAmpMeter( uiInstance,
+				((DJEQ3MadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator(),
 				true );
 		this.add( sam, "cell 2 0, growy");
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ 3 Way 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ 3 Way 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackComponent name="DJ EQ 1" definitionId="djeq">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 3 Way 1" definitionId="djeq3">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 1" definitionId="wave_roller">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="-10dB"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 2" definitionId="wave_roller">
+        <rackPosition column="2" row="6"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="-10dB"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 3" definitionId="wave_roller">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="-10dB"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 4" definitionId="wave_roller">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="-10dB"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output High Left" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output Low Left" consumerRackComponentName="Wave Roller 4" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output Mid Left" consumerRackComponentName="Wave Roller 3" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 2" consumerChannelName="Input Wave 0"/>
+</rack>

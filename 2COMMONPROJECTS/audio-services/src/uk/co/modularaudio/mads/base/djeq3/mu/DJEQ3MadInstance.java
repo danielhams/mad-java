@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.mu;
+package uk.co.modularaudio.mads.base.djeq3.mu;
 
 import java.util.Map;
 
@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadInstance>
+public class DJEQ3MadInstance extends MadInstance<DJEQ3MadDefinition, DJEQ3MadInstance>
 {
 //	private static Log log = LogFactory.getLog( DJEQMadInstance.class.getName() );
 
@@ -79,9 +79,9 @@ public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadIn
 
 	private final LimiterCrude limiterRt = new LimiterCrude( 0.99, 5 );
 
-	public DJEQ2MadInstance( final BaseComponentsCreationContext creationContext,
+	public DJEQ3MadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
-			final DJEQ2MadDefinition definition,
+			final DJEQ3MadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
 	{
@@ -137,7 +137,7 @@ public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadIn
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+	public final RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters,
 			final int U_periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
@@ -152,11 +152,6 @@ public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadIn
 		final int lowCvOffset = numFrames * 2;
 		final int faderCvOffset = numFrames * 3;
 
-		final int tmpLpSamplesOffset = numFrames * 4;
-		final int tmpNonLpSamplesOffset = numFrames * 5;
-		final int tmpMpSamplesOffset = numFrames * 6;
-		final int tmpHpSamplesOffset = numFrames * 7;
-
 		// Generate our control values (used by both left and right)
 		highSad.generateControlValues( tmpBuffer, hiCvOffset, numFrames );
 		highSad.checkForDenormal();
@@ -167,43 +162,55 @@ public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadIn
 		faderSad.generateControlValues( tmpBuffer, faderCvOffset, numFrames );
 		faderSad.checkForDenormal();
 
-		final float[] leftInputBuffer = channelBuffers[ DJEQ2MadDefinition.CONSUMER_WAVE_LEFT ].floatBuffer;
-		final float[] leftOutputBuffer = channelBuffers[ DJEQ2MadDefinition.PRODUCER_WAVE_LEFT ].floatBuffer;
-		final float[] rightInputBuffer = channelBuffers[ DJEQ2MadDefinition.CONSUMER_WAVE_RIGHT ].floatBuffer;
-		final float[] rightOutputBuffer = channelBuffers[ DJEQ2MadDefinition.PRODUCER_WAVE_RIGHT ].floatBuffer;
+		final float[] leftInputBuffer = channelBuffers[ DJEQ3MadDefinition.CONSUMER_WAVE_LEFT ].floatBuffer;
+		final float[] leftOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_WAVE_LEFT ].floatBuffer;
+		final float[] rightInputBuffer = channelBuffers[ DJEQ3MadDefinition.CONSUMER_WAVE_RIGHT ].floatBuffer;
+		final float[] rightOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_WAVE_RIGHT ].floatBuffer;
+
+		final float[] leftHighOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_HIGH_LEFT ].floatBuffer;
+		final float[] leftMidOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_MID_LEFT ].floatBuffer;
+		final float[] leftLowOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_LOW_LEFT ].floatBuffer;
 
 		leftLpCoFilter.filter( leftInputBuffer, frameOffset, numFrames, LP_CROSSOVER_FREQ, sampleRate,
-				tmpBuffer, tmpLpSamplesOffset, tmpBuffer, tmpNonLpSamplesOffset );
-		leftNonLpCoFilter.filter( tmpBuffer, tmpNonLpSamplesOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
-				tmpBuffer, tmpMpSamplesOffset, tmpBuffer, tmpHpSamplesOffset );
+				leftLowOutputBuffer, frameOffset, leftMidOutputBuffer, frameOffset );
+		leftNonLpCoFilter.filter( leftMidOutputBuffer, frameOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
+				leftMidOutputBuffer, frameOffset, leftHighOutputBuffer, frameOffset );
 
-		for( int i = 0 ; i < numFrames ; ++i )
-		{
-			leftOutputBuffer[frameOffset + i] =
-					(
-					(tmpBuffer[tmpLpSamplesOffset+i] * tmpBuffer[lowCvOffset+i])
-					+
-					(tmpBuffer[tmpMpSamplesOffset+i] * tmpBuffer[midCvOffset+i])
-					+
-					(tmpBuffer[tmpHpSamplesOffset+i] * tmpBuffer[hiCvOffset+i]) )
-					* tmpBuffer[faderCvOffset+i];
-		}
+		final float[] rightHighOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_HIGH_RIGHT ].floatBuffer;
+		final float[] rightMidOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_MID_RIGHT ].floatBuffer;
+		final float[] rightLowOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_LOW_RIGHT ].floatBuffer;
 
 		rightLpCoFilter.filter( rightInputBuffer, frameOffset, numFrames, LP_CROSSOVER_FREQ, sampleRate,
-				tmpBuffer, tmpLpSamplesOffset, tmpBuffer, tmpNonLpSamplesOffset );
-		rightNonLpCoFilter.filter( tmpBuffer, tmpNonLpSamplesOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
-				tmpBuffer, tmpMpSamplesOffset, tmpBuffer, tmpHpSamplesOffset );
+				rightLowOutputBuffer, frameOffset, rightMidOutputBuffer, frameOffset );
+		rightNonLpCoFilter.filter( rightMidOutputBuffer, frameOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
+				rightMidOutputBuffer, frameOffset, rightHighOutputBuffer, frameOffset );
 
 		for( int i = 0 ; i < numFrames ; ++i )
 		{
+			final float faderVal = tmpBuffer[faderCvOffset+i];
+			final float lowMultiplier = tmpBuffer[lowCvOffset+i] * faderVal;
+			final float midMultiplier = tmpBuffer[midCvOffset+i] * faderVal;
+			final float hiMultiplier = tmpBuffer[hiCvOffset+i] * faderVal;
+
+			leftLowOutputBuffer[frameOffset + i] *= lowMultiplier;
+			leftMidOutputBuffer[frameOffset + i] *= midMultiplier;
+			leftHighOutputBuffer[frameOffset + i] *= hiMultiplier;
+			leftOutputBuffer[frameOffset + i] =
+					leftLowOutputBuffer[frameOffset + i]
+					+
+					leftMidOutputBuffer[frameOffset + i]
+					+
+					leftHighOutputBuffer[frameOffset + i];
+
+			rightLowOutputBuffer[frameOffset + i] *= lowMultiplier;
+			rightMidOutputBuffer[frameOffset + i] *= midMultiplier;
+			rightHighOutputBuffer[frameOffset + i] *= hiMultiplier;
 			rightOutputBuffer[frameOffset + i] =
-					(
-					(tmpBuffer[tmpLpSamplesOffset+i] * tmpBuffer[lowCvOffset+i])
+					rightLowOutputBuffer[frameOffset + i]
 					+
-					(tmpBuffer[tmpMpSamplesOffset+i] * tmpBuffer[midCvOffset+i])
+					rightMidOutputBuffer[frameOffset + i]
 					+
-					(tmpBuffer[tmpHpSamplesOffset+i] * tmpBuffer[hiCvOffset+i]) )
-					* tmpBuffer[faderCvOffset+i];
+					rightHighOutputBuffer[frameOffset + i];
 		}
 
 		int currentSampleIndex = 0;
@@ -288,7 +295,7 @@ public class DJEQ2MadInstance extends MadInstance<DJEQ2MadDefinition, DJEQ2MadIn
 			final int lFloatIntBits = Float.floatToIntBits( leftReading );
 			final int rFloatIntBits = Float.floatToIntBits( rightReading );
 			final long joinedParts = ((long)lFloatIntBits << 32) | rFloatIntBits;
-			localBridge.queueTemporalEventToUi( tses, U_frameTime, DJEQ2IOQueueBridge.COMMAND_OUT_METER_READINGS, joinedParts, null );
+			localBridge.queueTemporalEventToUi( tses, U_frameTime, DJEQ3IOQueueBridge.COMMAND_OUT_METER_READINGS, joinedParts, null );
 		}
 	}
 

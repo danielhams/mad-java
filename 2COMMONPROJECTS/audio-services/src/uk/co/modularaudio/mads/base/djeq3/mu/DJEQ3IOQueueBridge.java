@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.mu;
+package uk.co.modularaudio.mads.base.djeq3.mu;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,9 +27,9 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
-public class DJEQ2IOQueueBridge extends MadLocklessQueueBridge<DJEQ2MadInstance>
+public class DJEQ3IOQueueBridge extends MadLocklessQueueBridge<DJEQ3MadInstance>
 {
-	private static Log log = LogFactory.getLog( DJEQ2IOQueueBridge.class.getName() );
+	private static Log log = LogFactory.getLog( DJEQ3IOQueueBridge.class.getName() );
 
 	public static final int COMMAND_IN_ACTIVE = 0;
 	public static final int COMMAND_IN_HP_AMP = 1;
@@ -39,12 +39,12 @@ public class DJEQ2IOQueueBridge extends MadLocklessQueueBridge<DJEQ2MadInstance>
 
 	public static final int COMMAND_OUT_METER_READINGS = 5;
 
-	public DJEQ2IOQueueBridge()
+	public DJEQ3IOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final DJEQ2MadInstance instance,
+	public void receiveQueuedEventsToInstance( final DJEQ3MadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
 			final int U_periodTimestamp,
 			final IOQueueEvent queueEntry )

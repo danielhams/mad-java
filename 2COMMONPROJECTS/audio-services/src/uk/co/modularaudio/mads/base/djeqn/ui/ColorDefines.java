@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeqn.ui;
 
 import java.awt.Color;
 
-public class DJEQ2ColorDefines
+public class ColorDefines
 {
 	public final static Color LABEL_COLOR = Color.white;
 	public final static Color UNITS_COLOR = Color.white;

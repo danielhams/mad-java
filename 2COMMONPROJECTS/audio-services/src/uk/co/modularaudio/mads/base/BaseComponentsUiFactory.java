@@ -49,8 +49,8 @@ import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.ui.DCTrapMadUiDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.ui.DJEQMadUiDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.ui.DJEQ2MadUiDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.ui.DJEQ3MadUiDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.ui.FrequencyFilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
@@ -162,7 +162,7 @@ public class BaseComponentsUiFactory
 	private ControllerToCvMadUiDefinition con2cvMud;
 	private SpectralRollerMadUiDefinition specrMud;
 	private CrossoverMadUiDefinition crossoMud;
-	private DJEQ2MadUiDefinition djeq2Mud;
+	private DJEQ3MadUiDefinition djeq2Mud;
 
 	private final HashMap<String, MadUiDefinition<?, ?>> mdIdToMudMap = new HashMap<String, MadUiDefinition<?,?>>();
 
@@ -421,11 +421,11 @@ public class BaseComponentsUiFactory
 			muds.add( crossoMud );
 			mdIdToMudMap.put( CrossoverMadDefinition.DEFINITION_ID, crossoMud );
 
-			final DJEQ2MadDefinition djeq2Md = (DJEQ2MadDefinition)componentService
-					.findDefinitionById( DJEQ2MadDefinition.DEFINITION_ID );
-			djeq2Mud = new DJEQ2MadUiDefinition( bufferedImageAllocationService, djeq2Md );
+			final DJEQ3MadDefinition djeq2Md = (DJEQ3MadDefinition)componentService
+					.findDefinitionById( DJEQ3MadDefinition.DEFINITION_ID );
+			djeq2Mud = new DJEQ3MadUiDefinition( bufferedImageAllocationService, djeq2Md );
 			muds.add( djeq2Mud );
-			mdIdToMudMap.put( DJEQ2MadDefinition.DEFINITION_ID, djeq2Mud );
+			mdIdToMudMap.put( DJEQ3MadDefinition.DEFINITION_ID, djeq2Mud );
 
 			componentUiService.registerComponentUiFactory( this );
 		}

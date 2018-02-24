@@ -18,27 +18,27 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq2.ui;
+package uk.co.modularaudio.mads.base.djeq3.ui;
 
-import uk.co.modularaudio.mads.base.djeq2.ui.OneEqKill.ToggleListener;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadInstance;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadInstance;
+import uk.co.modularaudio.mads.base.djeqn.ui.OneEqKill.ToggleListener;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 
 
-public class DJEQ2LowEQLane extends DJEQ2OneEQLane implements ValueChangeListener
+public class DJEQ3HighEQLane extends DJEQ3OneEQLane implements ValueChangeListener
 {
 	private static final long serialVersionUID = 4164721930545400401L;
 
-	private final DJEQ2MadUiInstance uiInstance;
+	private final DJEQ3MadUiInstance uiInstance;
 
-	public DJEQ2LowEQLane( final DJEQ2MadDefinition definition,
-			final DJEQ2MadInstance instance,
-			final DJEQ2MadUiInstance uiInstance,
+	public DJEQ3HighEQLane( final DJEQ3MadDefinition definition,
+			final DJEQ3MadInstance instance,
+			final DJEQ3MadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( definition, instance, uiInstance, controlIndex, "Low" );
+		super( definition, instance, uiInstance, controlIndex, "High" );
 
 		this.uiInstance = uiInstance;
 
@@ -50,7 +50,7 @@ public class DJEQ2LowEQLane extends DJEQ2OneEQLane implements ValueChangeListene
 			@Override
 			public void receiveToggleChange( final boolean previousValue, final boolean newValue )
 			{
-				uiInstance.setLowKilled( newValue );
+				uiInstance.setHighKilled( newValue );
 			}
 		} );
 
@@ -60,6 +60,6 @@ public class DJEQ2LowEQLane extends DJEQ2OneEQLane implements ValueChangeListene
 	public void receiveValueChange( final Object source, final float newValue )
 	{
 		final float actualValue = AudioMath.dbToLevelF( newValue );
-		uiInstance.setLowAmp( actualValue );
+		uiInstance.setHighAmp( actualValue );
 	}
 }

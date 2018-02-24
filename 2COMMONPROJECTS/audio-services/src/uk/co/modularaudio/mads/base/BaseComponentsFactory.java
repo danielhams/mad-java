@@ -40,7 +40,7 @@ import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
-import uk.co.modularaudio.mads.base.djeq2.mu.DJEQ2MadDefinition;
+import uk.co.modularaudio.mads.base.djeq3.mu.DJEQ3MadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
 import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
@@ -126,7 +126,7 @@ public class BaseComponentsFactory
 	private ControllerToCvMadDefinition con2cvMD;
 	private SpectralRollerMadDefinition specrMD;
 	private CrossoverMadDefinition crossoMD;
-	private DJEQ2MadDefinition djeq2MD;
+	private DJEQ3MadDefinition djeq2MD;
 
 	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
 
@@ -236,7 +236,7 @@ public class BaseComponentsFactory
 			addDef( specrMD );
 			crossoMD = new CrossoverMadDefinition( creationContext, classificationService );
 			addDef( crossoMD );
-			djeq2MD = new DJEQ2MadDefinition( creationContext, classificationService );
+			djeq2MD = new DJEQ3MadDefinition( creationContext, classificationService );
 			addDef( djeq2MD );
 
 			componentService.registerComponentFactory( this );
