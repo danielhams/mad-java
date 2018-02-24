@@ -91,7 +91,9 @@ public class ButterworthCrossover
 			final float frequency,
 			final float sampleRate,
 			final float[] clpBuffer,
-			final float[] chpBuffer )
+			final int clpOffset,
+			final float[] chpBuffer,
+			final int chpOffset )
 	{
 		// Will do for now
 		recompute( sampleRate, frequency );
@@ -101,7 +103,7 @@ public class ButterworthCrossover
 			final float lpW = inputFloat - lpB1 * lpFeedbackDelaySamples[0] - lpB2 * lpFeedbackDelaySamples[1];
 			final float lpResult = (lpA * lpW  + lpA1 * lpFeedbackDelaySamples[0] + lpA2 * lpFeedbackDelaySamples[1]);
 
-			clpBuffer[offset + i] = lpResult;
+			clpBuffer[clpOffset + i] = lpResult;
 
 			lpFeedbackDelaySamples[1] = lpFeedbackDelaySamples[0];
 			lpFeedbackDelaySamples[0] = lpW;
@@ -109,7 +111,7 @@ public class ButterworthCrossover
 			final float hpW = inputFloat - hpB1 * hpFeedbackDelaySamples[0] - hpB2 * hpFeedbackDelaySamples[1];
 			final float hpResult = (hpA * hpW  + hpA1 * hpFeedbackDelaySamples[0] + hpA2 * hpFeedbackDelaySamples[1]);
 
-			chpBuffer[offset + i] = hpResult;
+			chpBuffer[chpOffset + i] = hpResult;
 
 			hpFeedbackDelaySamples[1] = hpFeedbackDelaySamples[0];
 			hpFeedbackDelaySamples[0] = hpW;
@@ -122,7 +124,9 @@ public class ButterworthCrossover
 			final float[] srcFreqs, final int srcFreqOffset,
 			final float sampleRate,
 			final float[] clpBuffer,
-			final float[] chpBuffer )
+			final int clpOffset,
+			final float[] chpBuffer,
+			final int chpOffset )
 	{
 		for( int i = 0 ; i < length ; ++i )
 		{
@@ -131,7 +135,7 @@ public class ButterworthCrossover
 			final float lpW = inputFloat - lpB1 * lpFeedbackDelaySamples[0] - lpB2 * lpFeedbackDelaySamples[1];
 			final float lpResult = (lpA * lpW  + lpA1 * lpFeedbackDelaySamples[0] + lpA2 * lpFeedbackDelaySamples[1]);
 
-			clpBuffer[offset + i] = lpResult;
+			clpBuffer[clpOffset + i] = lpResult;
 
 			lpFeedbackDelaySamples[1] = lpFeedbackDelaySamples[0];
 			lpFeedbackDelaySamples[0] = lpW;
@@ -139,7 +143,7 @@ public class ButterworthCrossover
 			final float hpW = inputFloat - hpB1 * hpFeedbackDelaySamples[0] - hpB2 * hpFeedbackDelaySamples[1];
 			final float hpResult = (hpA * hpW  + hpA1 * hpFeedbackDelaySamples[0] + hpA2 * hpFeedbackDelaySamples[1]);
 
-			chpBuffer[offset + i] = hpResult;
+			chpBuffer[chpOffset + i] = hpResult;
 
 			hpFeedbackDelaySamples[1] = hpFeedbackDelaySamples[0];
 			hpFeedbackDelaySamples[0] = hpW;

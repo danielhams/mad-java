@@ -22,9 +22,6 @@ package uk.co.modularaudio.mads.base.spectralroller.mu;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -42,7 +39,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class SpectralRollerMadInstance extends MadInstance<SpectralRollerMadDefinition,SpectralRollerMadInstance>
 {
-	private static Log log = LogFactory.getLog( SpectralRollerMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralRollerMadInstance.class.getName() );
 
 	protected boolean active;
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ2 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ2 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
+        <rackPosition column="0" row="4"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 1" definitionId="djeq">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ2 1" definitionId="djeq2">
+        <rackPosition column="1" row="0"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+    </rackComponent>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="CaptureLength" value="60.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveButton" value="true|false&#x9;Trigger|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;Signal 3|true&#x9;Signal 4"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 3" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 4" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
+    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
+    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
+    <rackLink producerRackComponentName="DJ EQ2 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 3"/>
+    <rackLink producerRackComponentName="DJ EQ2 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="DJ EQ2 1" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 4"/>
+</rack>

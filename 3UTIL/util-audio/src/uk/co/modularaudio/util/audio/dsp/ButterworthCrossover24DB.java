@@ -95,7 +95,9 @@ public class ButterworthCrossover24DB
 			final float frequency,
 			final float sampleRate,
 			final float[] clpBuffer,
-			final float[] chpBuffer )
+			final int clpOffset,
+			final float[] chpBuffer,
+			final int chpOffset )
 	{
 		// Will do for now
 		recompute( sampleRate, frequency );
@@ -113,7 +115,7 @@ public class ButterworthCrossover24DB
 			final float lpW2 = tmpLpResult - lpB1 * lpFeedbackDelaySamples[2] - lpB2 * lpFeedbackDelaySamples[3];
 			final float lpResult2 = (lpA * lpW2  + lpA1 * lpFeedbackDelaySamples[2] + lpA2 * lpFeedbackDelaySamples[3]);
 
-			clpBuffer[offset + i] = lpResult2;
+			clpBuffer[clpOffset + i] = lpResult2;
 
 			lpFeedbackDelaySamples[3] = lpFeedbackDelaySamples[2];
 			lpFeedbackDelaySamples[2] = lpW2;
@@ -129,7 +131,7 @@ public class ButterworthCrossover24DB
 			final float hpW2 = tmpHpResult - hpB1 * hpFeedbackDelaySamples[2] - hpB2 * hpFeedbackDelaySamples[3];
 			final float hpResult2 = (hpA * hpW2  + hpA1 * hpFeedbackDelaySamples[2] + hpA2 * hpFeedbackDelaySamples[3]);
 
-			chpBuffer[offset + i] = hpResult2;
+			chpBuffer[chpOffset + i] = hpResult2;
 
 			hpFeedbackDelaySamples[3] = hpFeedbackDelaySamples[2];
 			hpFeedbackDelaySamples[2] = hpW2;
@@ -142,7 +144,9 @@ public class ButterworthCrossover24DB
 			final float[] srcFreqs, final int srcFreqOffset,
 			final float sampleRate,
 			final float[] clpBuffer,
-			final float[] chpBuffer )
+			final int clpOffset,
+			final float[] chpBuffer,
+			final int chpOffset )
 	{
 		for( int i = 0 ; i < length ; ++i )
 		{
@@ -159,7 +163,7 @@ public class ButterworthCrossover24DB
 			final float lpW2 = tmpLpResult - lpB1 * lpFeedbackDelaySamples[2] - lpB2 * lpFeedbackDelaySamples[3];
 			final float lpResult2 = (lpA * lpW2  + lpA1 * lpFeedbackDelaySamples[2] + lpA2 * lpFeedbackDelaySamples[3]);
 
-			clpBuffer[offset + i] = lpResult2;
+			clpBuffer[clpOffset + i] = lpResult2;
 
 			lpFeedbackDelaySamples[3] = lpFeedbackDelaySamples[2];
 			lpFeedbackDelaySamples[2] = lpW2;
@@ -175,7 +179,7 @@ public class ButterworthCrossover24DB
 			final float hpW2 = tmpHpResult - hpB1 * hpFeedbackDelaySamples[2] - hpB2 * hpFeedbackDelaySamples[3];
 			final float hpResult2 = (hpA * hpW2  + hpA1 * hpFeedbackDelaySamples[2] + hpA2 * hpFeedbackDelaySamples[3]);
 
-			chpBuffer[offset + i] = hpResult2;
+			chpBuffer[chpOffset + i] = hpResult2;
 
 			hpFeedbackDelaySamples[3] = hpFeedbackDelaySamples[2];
 			hpFeedbackDelaySamples[2] = hpW2;

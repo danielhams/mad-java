@@ -23,9 +23,6 @@ package uk.co.modularaudio.mads.base.crossover.mu;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthCrossover;
@@ -44,8 +41,6 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,CrossoverMadInstance>
 {
-	private static Log LOG = LogFactory.getLog( CrossoverMadInstance.class.getName() );
-
 	public final static float FREQ_MIN_VAL = 40.0f;
 	public final static float FREQ_MAX_VAL = 22050.0f;
 	public final static float FREQ_DEFAULT_VAL = 500.0f;
@@ -132,7 +127,6 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 		final float[] outHRfloats = outHRcb.floatBuffer;
 
 		final int freqOffset = 0;
-		final int bwOffset = numFrames;
 
 		// Start off true, set to false if one denormals (already converged enough)
 		boolean isSteadyState = true;
@@ -161,15 +155,12 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 
 		if( !inLConnected )
 		{
-			if( outLLConnected )
-			{
-				Arrays.fill( inLfloats, frameOffset, frameOffset + numFrames, 0.0f );
-			}
+			Arrays.fill( inLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 		}
 
 		final boolean isVarying = inCvFreqConnected || !isSteadyState;
 
-		if( outLLConnected )
+		if( outLLConnected || outHLConnected )
 		{
 			System.arraycopy( inLfloats, frameOffset, outLLfloats, frameOffset, numFrames );
 
@@ -181,13 +172,13 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 				{
 					leftChannel24db.filterWithFreq( outLLfloats, frameOffset, numFrames,
 							srcFreqs, srcFreqOffset, sampleRate,
-							outLLfloats, outHLfloats );
+							outLLfloats, frameOffset, outHLfloats, frameOffset );
 				}
 				else
 				{
 					leftChannelCrossover.filterWithFreq( outLLfloats, frameOffset, numFrames,
 							srcFreqs, srcFreqOffset, sampleRate,
-							outLLfloats, outHLfloats );
+							outLLfloats, frameOffset, outHLfloats, frameOffset );
 				}
 			}
 			else
@@ -196,13 +187,13 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 				{
 					leftChannel24db.filter( outLLfloats, frameOffset, numFrames,
 							desiredFrequency, sampleRate,
-							outLLfloats, outHLfloats );
+							outLLfloats, frameOffset, outHLfloats, frameOffset );
 				}
 				else
 				{
 					leftChannelCrossover.filter( outLLfloats, frameOffset, numFrames,
 							desiredFrequency, sampleRate,
-							outLLfloats, outHLfloats );
+							outLLfloats, frameOffset, outHLfloats, frameOffset );
 				}
 			}
 		}
@@ -210,13 +201,10 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 
 		if( !inRConnected )
 		{
-			if( outLRConnected )
-			{
-				Arrays.fill( inRfloats, frameOffset, frameOffset + numFrames, 0.0f );
-			}
+			Arrays.fill( inRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 		}
 
-		if( outLRConnected )
+		if( outLRConnected || outHRConnected )
 		{
 			System.arraycopy( inRfloats, frameOffset, outLRfloats, frameOffset, numFrames );
 
@@ -228,13 +216,13 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 				{
 					rightChannel24db.filterWithFreq( outLRfloats, frameOffset, numFrames,
 							srcFreqs, srcFreqOffset, sampleRate,
-							outLRfloats, outHRfloats );
+							outLRfloats, frameOffset, outHRfloats, frameOffset );
 				}
 				else
 				{
 					rightChannelCrossover.filterWithFreq( outLRfloats, frameOffset, numFrames,
 							srcFreqs, srcFreqOffset, sampleRate,
-							outLRfloats, outHRfloats );
+							outLRfloats, frameOffset, outHRfloats, frameOffset );
 				}
 			}
 			else
@@ -243,13 +231,13 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 				{
 					rightChannel24db.filter( outLRfloats, frameOffset, numFrames,
 							desiredFrequency, sampleRate,
-							outLRfloats, outHRfloats );
+							outLRfloats, frameOffset, outHRfloats, frameOffset );
 				}
 				else
 				{
 					rightChannelCrossover.filter( outLRfloats, frameOffset, numFrames,
 							desiredFrequency, sampleRate,
-							outLRfloats, outHRfloats );
+							outLRfloats, frameOffset, outHRfloats, frameOffset );
 				}
 			}
 		}

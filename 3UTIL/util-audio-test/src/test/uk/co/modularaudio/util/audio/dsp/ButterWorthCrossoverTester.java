@@ -103,7 +103,7 @@ public class ButterWorthCrossoverTester
 			regularLp.filter( rlpBuffer, 0, numThisRound, FREQUENCY, 0.0f, FrequencyFilterMode.LP, sampleRate );
 			regularHp.filter( rhpBuffer, 0, numThisRound, FREQUENCY, 0.0f, FrequencyFilterMode.HP, sampleRate );
 
-			crossover.filter( samplesToFilter, 0, numThisRound, FREQUENCY, sampleRate, clpBuffer, chpBuffer );
+			crossover.filter( samplesToFilter, 0, numThisRound, FREQUENCY, sampleRate, clpBuffer, 0, chpBuffer, 0 );
 
 			outRegLp.writeFrames( rlpBuffer, 0, numThisRound );
 			outRegHp.writeFrames( rhpBuffer, 0, numThisRound );
