@@ -13,7 +13,7 @@
     <rackComponent name="Crossover 1" definitionId="crossover">
         <rackPosition column="0" row="0"/>
         <rackControl name="Knee" value="440.0"/>
-        <rackControl name="Toggle 24 dB" value="false"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="DJ EQ 1" definitionId="djeq">
         <rackPosition column="0" row="12"/>
@@ -27,21 +27,21 @@
         <rackControl name="Bandwidth" value="440.0"/>
         <rackControl name="Filter Type" value="Low Pass"/>
         <rackControl name="Knee" value="440.0"/>
-        <rackControl name="Toggle 24 dB" value="false"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Frequency Filter 2" definitionId="frequency_filter">
         <rackPosition column="2" row="10"/>
         <rackControl name="Bandwidth" value="440.0"/>
         <rackControl name="Filter Type" value="High Pass"/>
         <rackControl name="Knee" value="440.0"/>
-        <rackControl name="Toggle 24 dB" value="false"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
         <rackControl name="Master Lane" value="-5.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
-        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:MS"/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:M "/>
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="2" row="6"/>

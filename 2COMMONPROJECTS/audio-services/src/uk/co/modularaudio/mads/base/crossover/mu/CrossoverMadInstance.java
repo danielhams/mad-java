@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthCrossover;
+import uk.co.modularaudio.util.audio.dsp.ButterworthCrossover24DB;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -63,8 +64,8 @@ public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,Cro
 
 	private final ButterworthCrossover leftChannelCrossover = new ButterworthCrossover();
 	private final ButterworthCrossover rightChannelCrossover = new ButterworthCrossover();
-	private final ButterworthCrossover leftChannel24db = new ButterworthCrossover();
-	private final ButterworthCrossover rightChannel24db = new ButterworthCrossover();
+	private final ButterworthCrossover24DB leftChannel24db = new ButterworthCrossover24DB();
+	private final ButterworthCrossover24DB rightChannel24db = new ButterworthCrossover24DB();
 
 	public CrossoverMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
