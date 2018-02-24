@@ -20,13 +20,15 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
+import java.util.Arrays;
+
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
 
 public class ButterworthCrossover
 {
-	private final float[] lpFeedbackDelaySamples = new float[2];
-	private final float[] hpFeedbackDelaySamples = new float[2];
+	private final float[] feedbackDelaySamples = new float[4];
 
 	private float prevFreq = -1.0f;
 	private float prevSr = -1.0f;
@@ -43,10 +45,7 @@ public class ButterworthCrossover
 
 	public final void clear()
 	{
-		lpFeedbackDelaySamples[0] = 0.0f;
-		lpFeedbackDelaySamples[1] = 0.0f;
-		hpFeedbackDelaySamples[0] = 0.0f;
-		hpFeedbackDelaySamples[1] = 0.0f;
+		Arrays.fill( feedbackDelaySamples, 0.0f);
 	}
 
 	// private final static boolean DEBUG_NAN = false;
@@ -100,22 +99,23 @@ public class ButterworthCrossover
 		for( int i = 0 ; i < length ; ++i )
 		{
 			final float inputFloat = input[offset + i];
-			final float lpW = inputFloat - lpB1 * lpFeedbackDelaySamples[0] - lpB2 * lpFeedbackDelaySamples[1];
-			final float lpResult = (lpA * lpW  + lpA1 * lpFeedbackDelaySamples[0] + lpA2 * lpFeedbackDelaySamples[1]);
+			final float lpW = inputFloat - lpB1 * feedbackDelaySamples[0] - lpB2 * feedbackDelaySamples[1];
+			final float lpResult = (lpA * lpW  + lpA1 * feedbackDelaySamples[0] + lpA2 * feedbackDelaySamples[1]);
 
 			clpBuffer[clpOffset + i] = lpResult;
 
-			lpFeedbackDelaySamples[1] = lpFeedbackDelaySamples[0];
-			lpFeedbackDelaySamples[0] = lpW;
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = lpW;
 
-			final float hpW = inputFloat - hpB1 * hpFeedbackDelaySamples[0] - hpB2 * hpFeedbackDelaySamples[1];
-			final float hpResult = (hpA * hpW  + hpA1 * hpFeedbackDelaySamples[0] + hpA2 * hpFeedbackDelaySamples[1]);
+			final float hpW = inputFloat - hpB1 * feedbackDelaySamples[0+2] - hpB2 * feedbackDelaySamples[1+2];
+			final float hpResult = (hpA * hpW  + hpA1 * feedbackDelaySamples[0+2] + hpA2 * feedbackDelaySamples[1+2]);
 
 			chpBuffer[chpOffset + i] = hpResult;
 
-			hpFeedbackDelaySamples[1] = hpFeedbackDelaySamples[0];
-			hpFeedbackDelaySamples[0] = hpW;
+			feedbackDelaySamples[1+2] = feedbackDelaySamples[0+2];
+			feedbackDelaySamples[0+2] = hpW;
 		}
+		denormalCheck();
 	}
 
 	public void filterWithFreq( final float[] input,
@@ -132,22 +132,36 @@ public class ButterworthCrossover
 		{
 			recompute( sampleRate, srcFreqs[srcFreqOffset+i] );
 			final float inputFloat = input[offset + i];
-			final float lpW = inputFloat - lpB1 * lpFeedbackDelaySamples[0] - lpB2 * lpFeedbackDelaySamples[1];
-			final float lpResult = (lpA * lpW  + lpA1 * lpFeedbackDelaySamples[0] + lpA2 * lpFeedbackDelaySamples[1]);
+			final float lpW = inputFloat - lpB1 * feedbackDelaySamples[0] - lpB2 * feedbackDelaySamples[1];
+			final float lpResult = (lpA * lpW  + lpA1 * feedbackDelaySamples[0] + lpA2 * feedbackDelaySamples[1]);
 
 			clpBuffer[clpOffset + i] = lpResult;
 
-			lpFeedbackDelaySamples[1] = lpFeedbackDelaySamples[0];
-			lpFeedbackDelaySamples[0] = lpW;
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = lpW;
 
-			final float hpW = inputFloat - hpB1 * hpFeedbackDelaySamples[0] - hpB2 * hpFeedbackDelaySamples[1];
-			final float hpResult = (hpA * hpW  + hpA1 * hpFeedbackDelaySamples[0] + hpA2 * hpFeedbackDelaySamples[1]);
+			final float hpW = inputFloat - hpB1 * feedbackDelaySamples[0+2] - hpB2 * feedbackDelaySamples[1+2];
+			final float hpResult = (hpA * hpW  + hpA1 * feedbackDelaySamples[0+2] + hpA2 * feedbackDelaySamples[1+2]);
 
 			chpBuffer[chpOffset + i] = hpResult;
 
-			hpFeedbackDelaySamples[1] = hpFeedbackDelaySamples[0];
-			hpFeedbackDelaySamples[0] = hpW;
+			feedbackDelaySamples[1+2] = feedbackDelaySamples[0+2];
+			feedbackDelaySamples[0+2] = hpW;
 		}
+		denormalCheck();
 	}
 
+	private final void denormalCheck()
+	{
+		for( int i = 0 ; i < feedbackDelaySamples.length ; ++i )
+		{
+			final float val = feedbackDelaySamples[i];
+			final float absVal = val < 0.0f ? -val : val;
+			final boolean tooSmall = absVal < AudioMath.MIN_SIGNED_FLOATING_POINT_32BIT_VAL_F;
+			if( tooSmall )
+			{
+				feedbackDelaySamples[i] = 0.0f;
+			}
+		}
+	}
 }

@@ -45,14 +45,14 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.397579"/>
+        <rackControl name="Gain" value="-7.3520913"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/ErikMitchell/Erik Mitchell - Turbo Tech 016 - 11.8.11 (192).mp3|1724651"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Reactivitz/Vision of Techno 054 with The Reactivitz.mp3|62822615"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="ZoomToggleGroup" value="1"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="7"/>
