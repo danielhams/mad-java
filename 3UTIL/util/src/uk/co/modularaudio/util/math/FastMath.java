@@ -106,5 +106,25 @@ public strictfp class FastMath
 
 	}
 
+	public final static float fastSinApprox( final float x )
+	{
+		final float B = MathDefines.FOUR_OVER_PI_F;
+		final float C = MathDefines.MINUS_FOUR_OVER_PI_SQUARED_F;
+
+		float y = B * x + C * x * (x < 0.0f ? -x : x );
+
+		// Extra precision
+
+		// Abs error minimisation
+//		// final float Q = 0.775f;
+//		final float P = 0.225f;
+		// Relative error minimisation
+		// final float Q = 0.782f;
+		final float P = 0.218f;
+
+		y = P * ( y * (y < 0.0f ? -y : y) - y ) + y; // Q * y + P * y * abs(y)
+
+		return y;
+	}
 
 }

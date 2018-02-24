@@ -39,6 +39,11 @@ public class MathDefines
 
 	public static final float MIN_AUDIO_FLOAT_AMP = Float.MIN_VALUE * 5000;
 
+	public static final double FOUR_OVER_PI_D = 4.0 / Math.PI;
+	public static final float FOUR_OVER_PI_F = (float)FOUR_OVER_PI_D;
+	public static final double MINUS_FOUR_OVER_PI_SQUARED_D = -4.0 / (Math.PI * Math.PI);
+	public static final float MINUS_FOUR_OVER_PI_SQUARED_F = (float)MINUS_FOUR_OVER_PI_SQUARED_D;
+
 	public final static double degreesToRadians( final double d )
 	{
 		return (Math.PI / 180.0) * d;

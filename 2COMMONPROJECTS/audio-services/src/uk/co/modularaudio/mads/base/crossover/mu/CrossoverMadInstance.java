@@ -18,16 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.frequencyfilter.mu;
+package uk.co.modularaudio.mads.base.crossover.mu;
 
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
-import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
+import uk.co.modularaudio.util.audio.dsp.ButterworthCrossover;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -40,9 +41,9 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDefinition,FrequencyFilterMadInstance>
+public class CrossoverMadInstance extends MadInstance<CrossoverMadDefinition,CrossoverMadInstance>
 {
-//	private static Log log = LogFactory.getLog( FrequencyFilterMadInstance.class.getName() );
+	private static Log LOG = LogFactory.getLog( CrossoverMadInstance.class.getName() );
 
 	public final static float FREQ_MIN_VAL = 40.0f;
 	public final static float FREQ_MAX_VAL = 22050.0f;
@@ -53,31 +54,27 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 	private int sampleRate;
 
-	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
 	private float desiredFrequency = FREQ_DEFAULT_VAL;
-	private float desiredBandwidth = BW_DEFAULT_VAL;
 	private boolean desired24dB = false;
 
 	private boolean was24dB = false;
 
 	private final SpringAndDamperDouble24Interpolator freqSad = new SpringAndDamperDouble24Interpolator();
-	private final SpringAndDamperDouble24Interpolator bwSad = new SpringAndDamperDouble24Interpolator();
 
-	private final ButterworthFilter leftChannelButterworth = new ButterworthFilter();
-	private final ButterworthFilter rightChannelButterworth = new ButterworthFilter();
-	private final ButterworthFilter24DB leftChannel24db = new ButterworthFilter24DB();
-	private final ButterworthFilter24DB rightChannel24db = new ButterworthFilter24DB();
+	private final ButterworthCrossover leftChannelCrossover = new ButterworthCrossover();
+	private final ButterworthCrossover rightChannelCrossover = new ButterworthCrossover();
+	private final ButterworthCrossover leftChannel24db = new ButterworthCrossover();
+	private final ButterworthCrossover rightChannel24db = new ButterworthCrossover();
 
-	public FrequencyFilterMadInstance( final BaseComponentsCreationContext creationContext,
+	public CrossoverMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
-			final FrequencyFilterMadDefinition definition,
+			final CrossoverMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
 		freqSad.resetLowerUpperBounds( FREQ_MIN_VAL, FREQ_MAX_VAL );
-		bwSad.resetLowerUpperBounds( BW_MIN_VAL, BW_MAX_VAL );
 	}
 
 	@Override
@@ -87,12 +84,10 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		freqSad.reset( sampleRate );
 		freqSad.hardSetValue( desiredFrequency );
-		bwSad.reset( sampleRate );
-		bwSad.hardSetValue( desiredBandwidth );
 
-		leftChannelButterworth.clear();
+		leftChannelCrossover.clear();
 		leftChannel24db.clear();
-		rightChannelButterworth.clear();
+		rightChannelCrossover.clear();
 		rightChannel24db.clear();
 	}
 
@@ -112,22 +107,28 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	{
 		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
 
-		final boolean inLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_LEFT );
-		final MadChannelBuffer inLcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_LEFT ];
+		final boolean inLConnected = channelConnectedFlags.get( CrossoverMadDefinition.CONSUMER_IN_LEFT );
+		final MadChannelBuffer inLcb = channelBuffers[ CrossoverMadDefinition.CONSUMER_IN_LEFT ];
 		final float[] inLfloats = inLcb.floatBuffer;
-		final boolean inRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT );
-		final MadChannelBuffer inRcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT ];
+		final boolean inRConnected = channelConnectedFlags.get( CrossoverMadDefinition.CONSUMER_IN_RIGHT );
+		final MadChannelBuffer inRcb = channelBuffers[ CrossoverMadDefinition.CONSUMER_IN_RIGHT ];
 		final float[] inRfloats = inRcb.floatBuffer;
-		final boolean inCvFreqConnected = channelConnectedFlags.get(  FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
-		final MadChannelBuffer inFreq = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
+		final boolean inCvFreqConnected = channelConnectedFlags.get(  CrossoverMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
+		final MadChannelBuffer inFreq = channelBuffers[ CrossoverMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
 		final float[] inCvFreqFloats = inFreq.floatBuffer;
 
-		final boolean outLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT );
-		final MadChannelBuffer outLcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT ];
-		final float[] outLfloats = outLcb.floatBuffer;
-		final boolean outRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT );
-		final MadChannelBuffer outRcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT ];
-		final float[] outRfloats = outRcb.floatBuffer;
+		final boolean outLLConnected = channelConnectedFlags.get( CrossoverMadDefinition.PRODUCER_OUT_LOW_LEFT );
+		final MadChannelBuffer outLLcb = channelBuffers[ CrossoverMadDefinition.PRODUCER_OUT_LOW_LEFT ];
+		final float[] outLLfloats = outLLcb.floatBuffer;
+		final boolean outHLConnected = channelConnectedFlags.get( CrossoverMadDefinition.PRODUCER_OUT_HIGH_LEFT );
+		final MadChannelBuffer outHLcb = channelBuffers[ CrossoverMadDefinition.PRODUCER_OUT_HIGH_LEFT ];
+		final float[] outHLfloats = outHLcb.floatBuffer;
+		final boolean outLRConnected = channelConnectedFlags.get( CrossoverMadDefinition.PRODUCER_OUT_LOW_RIGHT );
+		final MadChannelBuffer outLRcb = channelBuffers[ CrossoverMadDefinition.PRODUCER_OUT_LOW_RIGHT ];
+		final float[] outLRfloats = outLRcb.floatBuffer;
+		final boolean outHRConnected = channelConnectedFlags.get( CrossoverMadDefinition.PRODUCER_OUT_HIGH_RIGHT );
+		final MadChannelBuffer outHRcb = channelBuffers[ CrossoverMadDefinition.PRODUCER_OUT_HIGH_RIGHT ];
+		final float[] outHRfloats = outHRcb.floatBuffer;
 
 		final int freqOffset = 0;
 		final int bwOffset = numFrames;
@@ -137,7 +138,7 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 		if( inLConnected || inRConnected )
 		{
-			if( !freqSad.checkForDenormal() || !bwSad.checkForDenormal() )
+			if( !freqSad.checkForDenormal() )
 			{
 				isSteadyState = false;
 			}
@@ -145,7 +146,6 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			if( !isSteadyState )
 			{
 				freqSad.generateControlValues( tmpBuffer, freqOffset, numFrames );
-				bwSad.generateControlValues( tmpBuffer, bwOffset, numFrames );
 			}
 		}
 
@@ -153,14 +153,14 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			leftChannel24db.clear();
 			rightChannel24db.clear();
-			leftChannelButterworth.clear();
-			rightChannelButterworth.clear();
+			leftChannelCrossover.clear();
+			rightChannelCrossover.clear();
 			was24dB = desired24dB;
 		}
 
 		if( !inLConnected )
 		{
-			if( outLConnected )
+			if( outLLConnected )
 			{
 				Arrays.fill( inLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
@@ -168,9 +168,9 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 		final boolean isVarying = inCvFreqConnected || !isSteadyState;
 
-		if( outLConnected )
+		if( outLLConnected )
 		{
-			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
+			System.arraycopy( inLfloats, frameOffset, outLLfloats, frameOffset, numFrames );
 
 			if( isVarying)
 			{
@@ -178,32 +178,30 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 				final int srcFreqOffset = (inCvFreqConnected ? numFrames : freqOffset );
 				if( desired24dB )
 				{
-					leftChannel24db.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
-							srcFreqs, srcFreqOffset,
-							tmpBuffer, bwOffset,
-							desiredFilterMode, sampleRate );
+					leftChannel24db.filterWithFreq( outLLfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset, sampleRate,
+							outLLfloats, outHLfloats );
 				}
 				else
 				{
-					leftChannelButterworth.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
-							srcFreqs, srcFreqOffset,
-							tmpBuffer, bwOffset,
-							desiredFilterMode, sampleRate );
+					leftChannelCrossover.filterWithFreq( outLLfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset, sampleRate,
+							outLLfloats, outHLfloats );
 				}
 			}
 			else
 			{
 				if( desired24dB )
 				{
-					leftChannel24db.filter( outLfloats, frameOffset, numFrames,
-							desiredFrequency, desiredBandwidth,
-							desiredFilterMode, sampleRate );
+					leftChannel24db.filter( outLLfloats, frameOffset, numFrames,
+							desiredFrequency, sampleRate,
+							outLLfloats, outHLfloats );
 				}
 				else
 				{
-					leftChannelButterworth.filter( outLfloats, frameOffset, numFrames,
-							desiredFrequency, desiredBandwidth,
-							desiredFilterMode, sampleRate );
+					leftChannelCrossover.filter( outLLfloats, frameOffset, numFrames,
+							desiredFrequency, sampleRate,
+							outLLfloats, outHLfloats );
 				}
 			}
 		}
@@ -211,15 +209,15 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 		if( !inRConnected )
 		{
-			if( outRConnected )
+			if( outLRConnected )
 			{
 				Arrays.fill( inRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 		}
 
-		if( outRConnected )
+		if( outLRConnected )
 		{
-			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
+			System.arraycopy( inRfloats, frameOffset, outLRfloats, frameOffset, numFrames );
 
 			if( isVarying)
 			{
@@ -227,32 +225,30 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 				final int srcFreqOffset = (inCvFreqConnected ? numFrames : freqOffset );
 				if( desired24dB )
 				{
-					rightChannel24db.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
-							srcFreqs, srcFreqOffset,
-							tmpBuffer, bwOffset,
-							desiredFilterMode, sampleRate );
+					rightChannel24db.filterWithFreq( outLRfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset, sampleRate,
+							outLRfloats, outHRfloats );
 				}
 				else
 				{
-					rightChannelButterworth.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
-							srcFreqs, srcFreqOffset,
-							tmpBuffer, bwOffset,
-							desiredFilterMode, sampleRate );
+					rightChannelCrossover.filterWithFreq( outLRfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset, sampleRate,
+							outLRfloats, outHRfloats );
 				}
 			}
 			else
 			{
 				if( desired24dB )
 				{
-					rightChannel24db.filter( outRfloats, frameOffset, numFrames,
-							desiredFrequency, desiredBandwidth,
-							desiredFilterMode, sampleRate );
+					rightChannel24db.filter( outLRfloats, frameOffset, numFrames,
+							desiredFrequency, sampleRate,
+							outLRfloats, outHRfloats );
 				}
 				else
 				{
-					rightChannelButterworth.filter( outRfloats, frameOffset, numFrames,
-							desiredFrequency, desiredBandwidth,
-							desiredFilterMode, sampleRate );
+					rightChannelCrossover.filter( outLRfloats, frameOffset, numFrames,
+							desiredFrequency, sampleRate,
+							outLRfloats, outHRfloats );
 				}
 			}
 		}
@@ -260,21 +256,10 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	public void setDesiredFilterMode( final FrequencyFilterMode mode )
-	{
-		this.desiredFilterMode = mode;
-	}
-
 	public void setDesiredFrequency( final float freq )
 	{
 		this.desiredFrequency = freq;
 		freqSad.notifyOfNewValue( freq );
-	}
-
-	public void setDesiredBandwidth( final float bw )
-	{
-		this.desiredBandwidth = bw;
-		bwSad.notifyOfNewValue( bw );
 	}
 
 	public void setDesired24dB( final boolean is24 )

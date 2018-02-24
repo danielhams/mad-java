@@ -34,6 +34,7 @@ import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillat
 import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
+import uk.co.modularaudio.mads.base.crossover.mu.CrossoverMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
@@ -123,6 +124,7 @@ public class BaseComponentsFactory
 	private NoteDebugMadDefinition notedMD;
 	private ControllerToCvMadDefinition con2cvMD;
 	private SpectralRollerMadDefinition specrMD;
+	private CrossoverMadDefinition crossoMD;
 
 	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
 
@@ -230,6 +232,8 @@ public class BaseComponentsFactory
 			addDef( con2cvMD );
 			specrMD = new SpectralRollerMadDefinition( creationContext, classificationService );
 			addDef( specrMD );
+			crossoMD = new CrossoverMadDefinition( creationContext, classificationService );
+			addDef( crossoMD );
 
 			componentService.registerComponentFactory( this );
 

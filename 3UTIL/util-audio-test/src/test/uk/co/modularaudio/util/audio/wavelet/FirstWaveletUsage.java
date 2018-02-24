@@ -22,11 +22,12 @@ public class FirstWaveletUsage
 
 	private final static String CACHE_ROOT = "wavetablecache";
 
-	private final static float OSC_FREQ = 1000;
-	private final static int NUM_SAMPLES = 256;
-//	private final static int SAMPLE_RATE = 40000;
-	private final static int SAMPLE_RATE = 10 * 1000;
-	private final static int NUM_PASSES = 1;
+	private final static float OSC_FREQ = 60;
+	private final static int NUM_SAMPLES = 4096;
+	private final static int SAMPLE_RATE = 48000;
+//	private final static int SAMPLE_RATE = 10 * 1000;
+//	private final static int NUM_PASSES = 1;
+	private final static int NUM_PASSES = 100;
 
 //	private final static float OSC_AMP = 0.5f;
 
@@ -88,6 +89,7 @@ public class FirstWaveletUsage
 			sampleArray[i] = tmpOutput[i] * 0.5f;
 		}
 
+		final double[] firstTwenty = new double[20];
 		final FirstWaveletUsage t = new FirstWaveletUsage();
 		for( int i = 0 ; i < NUM_PASSES ; ++i )
 		{
@@ -99,7 +101,8 @@ public class FirstWaveletUsage
 			if( i % 10 == 0 )
 			{
 				log.info( "Pass took " + diffStr + " nanos");
-				log.debug( "Result is " + resultArrayToString( result ) );
+				System.arraycopy( result, 0, firstTwenty, 0, 20 );
+				log.debug( "First twenty in result is " + resultArrayToString( firstTwenty ) );
 			}
 		}
 	}

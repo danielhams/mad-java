@@ -192,8 +192,9 @@ public class WaveFileReader
 			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
 			final int numFramesThisRound = numFloatsThisRound / numChannels;
 			final int numBytesThisRound = numFloatsThisRound * bytesPerSample;
-			raf.read( internalByteBuffer, 0, numBytesThisRound );
-			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFramesThisRound, bytesPerSample );
+			final int numBytesRead = raf.read( internalByteBuffer, 0, numBytesThisRound );
+			assert( numBytesRead == numBytesThisRound );
+			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFloatsThisRound, bytesPerSample );
 
 			curOutputPos += numFloatsThisRound;
 			numFloatsLeft -= numFloatsThisRound;

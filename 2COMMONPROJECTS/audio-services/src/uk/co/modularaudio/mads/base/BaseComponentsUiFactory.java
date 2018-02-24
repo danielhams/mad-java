@@ -37,6 +37,8 @@ import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinitio
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvMadUiDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.ui.CrossFaderMadUiDefinition;
+import uk.co.modularaudio.mads.base.crossover.mu.CrossoverMadDefinition;
+import uk.co.modularaudio.mads.base.crossover.ui.CrossoverMadUiDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.ui.LinearCVAMadUiDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
@@ -157,6 +159,7 @@ public class BaseComponentsUiFactory
 	private NoteDebugMadUiDefinition notedMud;
 	private ControllerToCvMadUiDefinition con2cvMud;
 	private SpectralRollerMadUiDefinition specrMud;
+	private CrossoverMadUiDefinition crossoMud;
 
 	private final HashMap<String, MadUiDefinition<?, ?>> mdIdToMudMap = new HashMap<String, MadUiDefinition<?,?>>();
 
@@ -408,6 +411,12 @@ public class BaseComponentsUiFactory
 			specrMud = new SpectralRollerMadUiDefinition( bufferedImageAllocationService, specrMd );
 			muds.add( specrMud );
 			mdIdToMudMap.put( SpectralRollerMadDefinition.DEFINITION_ID, specrMud );
+
+			final CrossoverMadDefinition crossoMd = (CrossoverMadDefinition)componentService
+					.findDefinitionById( CrossoverMadDefinition.DEFINITION_ID );
+			crossoMud = new CrossoverMadUiDefinition( crossoMd );
+			muds.add( crossoMud );
+			mdIdToMudMap.put( CrossoverMadDefinition.DEFINITION_ID, crossoMud );
 
 			componentUiService.registerComponentUiFactory( this );
 		}
