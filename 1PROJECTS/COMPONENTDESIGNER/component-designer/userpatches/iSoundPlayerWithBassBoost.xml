@@ -13,13 +13,6 @@
         <rackControl name="PowerCurve" value="Equal Power"/>
         <rackControl name="Slider" value="-1.0"/>
     </rackComponent>
-    <rackComponent name="DJ EQ 1" definitionId="djeq">
-        <rackPosition column="3" row="0"/>
-        <rackControl name="Fader" value="0.0"/>
-        <rackControl name="HighLane" value="0.0:false"/>
-        <rackControl name="LowLane" value="0.0:false"/>
-        <rackControl name="MidLane" value="0.0:false"/>
-    </rackComponent>
     <rackComponent name="DJ EQ 3 Way 1" definitionId="djeq3">
         <rackPosition column="2" row="0"/>
         <rackControl name="Fader" value="0.0"/>
@@ -45,14 +38,14 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.3520913"/>
+        <rackControl name="Gain" value="-7.4683084"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Reactivitz/Vision of Techno 054 with The Reactivitz.mp3|62822615"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2007-08-10_19h32m18unknown1.mp3|87912595"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="7"/>
@@ -71,7 +64,7 @@
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="2" row="6"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="Sub Rack 2" definitionId="sub_rack">
         <rackPosition column="2" row="5"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 3" definitionId="sub_rack">
@@ -87,17 +80,13 @@
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
-    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>
-    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="DJ EQ 3 Way 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Right" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Right"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Right" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Right" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 3 Way 1" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 1" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 3 Way 1" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>

@@ -198,7 +198,11 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		super( colours, text );
 		this.isImmediate = isImmediate;
 
-		final int minWidth = getFontMetrics( getFont() ).stringWidth( text ) + 30;
+		final int minWidth = text != null
+				?
+				getFontMetrics( getFont() ).stringWidth( text ) + 30
+				:
+				50;
 
 		final int minHeight = 30;
 

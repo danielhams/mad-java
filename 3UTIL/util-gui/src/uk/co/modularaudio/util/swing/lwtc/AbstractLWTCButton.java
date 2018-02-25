@@ -82,7 +82,7 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 		this.addFocusListener( this );
 	}
 
-	private final void paintButton( final Graphics2D g2d,
+	protected void paintButton( final Graphics2D g2d,
 			final LWTCButtonStateColours stateColours,
 			final GradientPaint gp,
 			final int width,
