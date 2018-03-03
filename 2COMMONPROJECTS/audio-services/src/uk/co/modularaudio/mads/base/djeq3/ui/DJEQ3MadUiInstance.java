@@ -38,7 +38,7 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 public class DJEQ3MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<DJEQ3MadDefinition, DJEQ3MadInstance>
 	implements IOQueueEventUiConsumer<DJEQ3MadInstance>
 {
-	private static Log log = LogFactory.getLog( DJEQ3MadUiInstance.class.getName() );
+	private static Log LOG = LogFactory.getLog( DJEQ3MadUiInstance.class.getName() );
 
 	private long framesBetweenPeakReset;
 
@@ -105,7 +105,7 @@ public class DJEQ3MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 			default:
 			{
 				final String msg = "Unknown command to guI: " + nextOutgoingEntry.command;
-				log.error( msg );
+				LOG.error( msg );
 			}
 		}
 	}
@@ -204,5 +204,18 @@ public class DJEQ3MadUiInstance extends AbstractNoNameChangeNonConfigurableMadUi
 	public void sendUiActive( final boolean active )
 	{
 		sendCommandValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0) );
+	}
+
+	public void setNewCrossoverFrequencies( final float lowerFreq, final float upperFreq )
+	{
+		final int lowerFreqVal = Float.floatToIntBits( lowerFreq );
+		final int upperFreqVal = Float.floatToIntBits( upperFreq );
+		LOG.info("Passing u/l as " + lowerFreq + " to " + upperFreq);
+
+		final long lower32Bits = lowerFreqVal;
+		final long upper32Bits = upperFreqVal;
+		final long lValue = lower32Bits | (upper32Bits << 32);
+
+		sendTemporalValueToInstance( DJEQ3IOQueueBridge.COMMAND_IN_CO_FREQS, lValue );
 	}
 }

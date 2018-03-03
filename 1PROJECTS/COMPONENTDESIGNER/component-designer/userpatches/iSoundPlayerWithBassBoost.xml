@@ -19,6 +19,7 @@
         <rackControl name="HighLane" value="0.0:false"/>
         <rackControl name="LowLane" value="0.0:false"/>
         <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="Options" value="120.0:2500.0"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="0" row="9"/>
@@ -38,10 +39,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.4683084"/>
+        <rackControl name="Gain" value="-7.3520913"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2007-08-10_19h32m18unknown1.mp3|87912595"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Reactivitz/Vision of Techno 054 with The Reactivitz.mp3|90808275"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -64,7 +65,7 @@
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="2" row="6"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="Sub Rack 2" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
         <rackPosition column="2" row="5"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 3" definitionId="sub_rack">

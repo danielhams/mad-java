@@ -172,4 +172,9 @@ public class RotaryDisplayView extends JPanel
 	{
 		knob.setDiameter( diameter );
 	}
+
+	public RotaryDisplayKnob getKnob()
+	{
+		return knob;
+	}
 }

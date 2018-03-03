@@ -21,6 +21,8 @@
 package test.uk.co.modularaudio.util.swing.dialog;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -139,6 +141,27 @@ public class TestUseDialogs
 
 	public static void main( final String[] args ) throws Exception
 	{
+		final String gtkLookAndFeelClassName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+		boolean foundGtkLaf = false;
+
+		final LookAndFeelInfo lafis[] = UIManager.getInstalledLookAndFeels();
+
+		for( final LookAndFeelInfo lafi : lafis )
+		{
+			final String lc = lafi.getClassName();
+			if( lc.equals( gtkLookAndFeelClassName ) )
+			{
+				foundGtkLaf = true;
+				break;
+			}
+		}
+
+		if( foundGtkLaf )
+		{
+			log.debug("Found available GTK laf. Will set active");
+			UIManager.setLookAndFeel( gtkLookAndFeelClassName );
+		}
+		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		final TestUseDialogs tud = new TestUseDialogs();
 		tud.testUseTextInput();
 		tud.testUseYesNoQuestion();

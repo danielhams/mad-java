@@ -22,7 +22,11 @@ package uk.co.modularaudio.mads.base.djeq3.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.djeq3.ui.crossfreqdiag.EQCrossoverPresetChoiceUiJComponent;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthCrossover24DB;
 import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
@@ -41,12 +45,9 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class DJEQ3MadInstance extends MadInstance<DJEQ3MadDefinition, DJEQ3MadInstance>
 {
-//	private static Log log = LogFactory.getLog( DJEQMadInstance.class.getName() );
+	private static Log LOG = LogFactory.getLog( DJEQ3MadInstance.class.getName() );
 
 	private final static float MAX_EQ_OVERDRIVE = AudioMath.dbToLevelF( 10.0f );
-
-	private final static float LP_CROSSOVER_FREQ = 120.0f;
-	private final static float HP_CROSSOVER_FREQ = 2500.0f;
 
 	private int sampleRate;
 	private int sampleFramesPerFrontEndPeriod;
@@ -69,6 +70,9 @@ public class DJEQ3MadInstance extends MadInstance<DJEQ3MadDefinition, DJEQ3MadIn
 	private final ButterworthCrossover24DB rightNonLpCoFilter = new ButterworthCrossover24DB();
 
 	private final LimiterCrude limiterRt = new LimiterCrude( 0.99, 5 );
+
+	private float desiredLowCoFreq = EQCrossoverPresetChoiceUiJComponent.PresetChoice.DJ_EQ_BANDS1.getLowFreq();
+	private float desiredUpperCoFreq = EQCrossoverPresetChoiceUiJComponent.PresetChoice.DJ_EQ_BANDS1.getHighFreq();
 
 	public DJEQ3MadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -152,18 +156,18 @@ public class DJEQ3MadInstance extends MadInstance<DJEQ3MadDefinition, DJEQ3MadIn
 		final float[] leftMidOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_MID_LEFT ].floatBuffer;
 		final float[] leftLowOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_LOW_LEFT ].floatBuffer;
 
-		leftLpCoFilter.filter( leftInputBuffer, frameOffset, numFrames, LP_CROSSOVER_FREQ, sampleRate,
+		leftLpCoFilter.filter( leftInputBuffer, frameOffset, numFrames, desiredLowCoFreq, sampleRate,
 				leftLowOutputBuffer, frameOffset, leftMidOutputBuffer, frameOffset );
-		leftNonLpCoFilter.filter( leftMidOutputBuffer, frameOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
+		leftNonLpCoFilter.filter( leftMidOutputBuffer, frameOffset, numFrames, desiredUpperCoFreq, sampleRate,
 				leftMidOutputBuffer, frameOffset, leftHighOutputBuffer, frameOffset );
 
 		final float[] rightHighOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_HIGH_RIGHT ].floatBuffer;
 		final float[] rightMidOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_MID_RIGHT ].floatBuffer;
 		final float[] rightLowOutputBuffer = channelBuffers[ DJEQ3MadDefinition.PRODUCER_LOW_RIGHT ].floatBuffer;
 
-		rightLpCoFilter.filter( rightInputBuffer, frameOffset, numFrames, LP_CROSSOVER_FREQ, sampleRate,
+		rightLpCoFilter.filter( rightInputBuffer, frameOffset, numFrames, desiredLowCoFreq, sampleRate,
 				rightLowOutputBuffer, frameOffset, rightMidOutputBuffer, frameOffset );
-		rightNonLpCoFilter.filter( rightMidOutputBuffer, frameOffset, numFrames, HP_CROSSOVER_FREQ, sampleRate,
+		rightNonLpCoFilter.filter( rightMidOutputBuffer, frameOffset, numFrames, desiredUpperCoFreq, sampleRate,
 				rightMidOutputBuffer, frameOffset, rightHighOutputBuffer, frameOffset );
 
 		for( int i = 0 ; i < numFrames ; ++i )
@@ -283,5 +287,12 @@ public class DJEQ3MadInstance extends MadInstance<DJEQ3MadDefinition, DJEQ3MadIn
 	public void setActive( final boolean active )
 	{
 		this.active = active;
+	}
+
+	public void setDesiredCoFreqs( final float lowerFreq, final float upperFreq )
+	{
+		this.desiredLowCoFreq = lowerFreq;
+		this.desiredUpperCoFreq = upperFreq;
+		LOG.info("Set desired CO freqs to " + lowerFreq + " and " + upperFreq );
 	}
 }

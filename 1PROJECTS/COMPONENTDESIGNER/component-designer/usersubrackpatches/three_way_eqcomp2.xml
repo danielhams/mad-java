@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="ThreeWayEqAndCompression" cols="4" rows="20">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="A/BMixer" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="LowEQ" rackComponentChannelInstanceName="Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="NonLowEQ" rackComponentChannelInstanceName="Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="A/BMixer" rackComponentChannelInstanceName="Lane 1 Input Wave Right"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="LowEQ" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="NonLowEQ" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="A/BMixer" rackComponentChannelInstanceName="Output Wave Left"/>
-    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="A/BMixer" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="A/BMixer" definitionId="imixer3">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="3Way Comp Splitter" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="3Way Comp Splitter" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="ThreeWayCompDryMixer" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="ThreeWayCompDryMixer" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="3Way Comp Splitter" definitionId="djeq3">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="0.0:0.0:M "/>
-        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
-    </rackComponent>
-    <rackComponent name="HIghEQ" definitionId="frequency_filter">
-        <rackPosition column="2" row="10"/>
-        <rackControl name="Bandwidth" value="440.0"/>
-        <rackControl name="Filter Type" value="High Pass"/>
-        <rackControl name="Knee" value="2500.0"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="Options" value="457.46:2500.0"/>
     </rackComponent>
     <rackComponent name="HighCompressor" definitionId="stereo_compressor">
-        <rackPosition column="2" row="12"/>
+        <rackPosition column="0" row="12"/>
         <rackControl name="Attack" value="4.0"/>
         <rackControl name="Attenuation" value=""/>
         <rackControl name="CompressionRatio" value="3.0"/>
@@ -36,14 +26,14 @@
         <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
     <rackComponent name="HighWetDry" definitionId="cross_fader">
-        <rackPosition column="0" row="18"/>
+        <rackPosition column="2" row="6"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="0.40999997"/>
     </rackComponent>
     <rackComponent name="LowCompressor" definitionId="stereo_compressor">
-        <rackPosition column="0" row="6"/>
+        <rackPosition column="0" row="4"/>
         <rackControl name="Attack" value="4.0"/>
         <rackControl name="Attenuation" value=""/>
         <rackControl name="CompressionRatio" value="3.0"/>
@@ -55,22 +45,15 @@
         <rackControl name="Threshold" value="-20.0"/>
         <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
-    <rackComponent name="LowEQ" definitionId="frequency_filter">
-        <rackPosition column="0" row="4"/>
-        <rackControl name="Bandwidth" value="440.0"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Knee" value="467.46"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-    </rackComponent>
     <rackComponent name="LowWetDry" definitionId="cross_fader">
-        <rackPosition column="0" row="16"/>
+        <rackPosition column="2" row="4"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="0.42999995"/>
     </rackComponent>
     <rackComponent name="MidCompressor" definitionId="stereo_compressor">
-        <rackPosition column="0" row="12"/>
+        <rackPosition column="0" row="8"/>
         <rackControl name="Attack" value="8.0"/>
         <rackControl name="Attenuation" value=""/>
         <rackControl name="CompressionRatio" value="3.0"/>
@@ -82,26 +65,12 @@
         <rackControl name="Threshold" value="-22.0"/>
         <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
-    <rackComponent name="MidEQ" definitionId="frequency_filter">
-        <rackPosition column="0" row="10"/>
-        <rackControl name="Bandwidth" value="440.0"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Knee" value="2500.0"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-    </rackComponent>
     <rackComponent name="MidWetDry" definitionId="cross_fader">
-        <rackPosition column="0" row="17"/>
+        <rackPosition column="2" row="5"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="0.39"/>
-    </rackComponent>
-    <rackComponent name="NonLowEQ" definitionId="frequency_filter">
-        <rackPosition column="2" row="8"/>
-        <rackControl name="Bandwidth" value="1552.62"/>
-        <rackControl name="Filter Type" value="High Pass"/>
-        <rackControl name="Knee" value="467.46"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 9" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
@@ -118,15 +87,18 @@
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="ThreeWayCompDryMixer" definitionId="imixer3">
-        <rackPosition column="2" row="16"/>
+        <rackPosition column="2" row="7"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
     </rackComponent>
-    <rackLink producerRackComponentName="A/BMixer" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 9" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="HIghEQ" producerChannelName="Output Wave Left" consumerRackComponentName="HighCompressor" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="HIghEQ" producerChannelName="Output Wave Right" consumerRackComponentName="HighCompressor" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output High Left" consumerRackComponentName="HighCompressor" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output High Rigth" consumerRackComponentName="HighCompressor" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output Low Left" consumerRackComponentName="LowCompressor" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output Low Rigth" consumerRackComponentName="LowCompressor" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output Mid Left" consumerRackComponentName="MidCompressor" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="3Way Comp Splitter" producerChannelName="Output Mid Rigth" consumerRackComponentName="MidCompressor" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="HighCompressor" producerChannelName="Output Dry Left" consumerRackComponentName="HighWetDry" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="HighCompressor" producerChannelName="Output Dry Right" consumerRackComponentName="HighWetDry" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="HighCompressor" producerChannelName="Output Wave Left" consumerRackComponentName="HighWetDry" consumerChannelName="Input Channel 1 Left"/>
@@ -137,22 +109,13 @@
     <rackLink producerRackComponentName="LowCompressor" producerChannelName="Output Dry Right" consumerRackComponentName="LowWetDry" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="LowCompressor" producerChannelName="Output Wave Left" consumerRackComponentName="LowWetDry" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="LowCompressor" producerChannelName="Output Wave Right" consumerRackComponentName="LowWetDry" consumerChannelName="Input Channel 1 Right"/>
-    <rackLink producerRackComponentName="LowEQ" producerChannelName="Output Wave Left" consumerRackComponentName="LowCompressor" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="LowEQ" producerChannelName="Output Wave Right" consumerRackComponentName="LowCompressor" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="LowWetDry" producerChannelName="Output Wave Left" consumerRackComponentName="ThreeWayCompDryMixer" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="LowWetDry" producerChannelName="Output Wave Right" consumerRackComponentName="ThreeWayCompDryMixer" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="MidCompressor" producerChannelName="Output Dry Left" consumerRackComponentName="MidWetDry" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="MidCompressor" producerChannelName="Output Dry Right" consumerRackComponentName="MidWetDry" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="MidCompressor" producerChannelName="Output Wave Left" consumerRackComponentName="MidWetDry" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="MidCompressor" producerChannelName="Output Wave Right" consumerRackComponentName="MidWetDry" consumerChannelName="Input Channel 1 Right"/>
-    <rackLink producerRackComponentName="MidEQ" producerChannelName="Output Wave Left" consumerRackComponentName="MidCompressor" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="MidEQ" producerChannelName="Output Wave Right" consumerRackComponentName="MidCompressor" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="MidWetDry" producerChannelName="Output Wave Left" consumerRackComponentName="ThreeWayCompDryMixer" consumerChannelName="Lane 2 Input Wave Left"/>
     <rackLink producerRackComponentName="MidWetDry" producerChannelName="Output Wave Right" consumerRackComponentName="ThreeWayCompDryMixer" consumerChannelName="Lane 2 Input Wave Right"/>
-    <rackLink producerRackComponentName="NonLowEQ" producerChannelName="Output Wave Left" consumerRackComponentName="HIghEQ" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="NonLowEQ" producerChannelName="Output Wave Left" consumerRackComponentName="MidEQ" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="NonLowEQ" producerChannelName="Output Wave Right" consumerRackComponentName="HIghEQ" consumerChannelName="Input Wave Right"/>
-    <rackLink producerRackComponentName="NonLowEQ" producerChannelName="Output Wave Right" consumerRackComponentName="MidEQ" consumerChannelName="Input Wave Right"/>
-    <rackLink producerRackComponentName="ThreeWayCompDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="A/BMixer" consumerChannelName="Lane 2 Input Wave Left"/>
-    <rackLink producerRackComponentName="ThreeWayCompDryMixer" producerChannelName="Output Wave Right" consumerRackComponentName="A/BMixer" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="ThreeWayCompDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 9" consumerChannelName="Input Wave"/>
 </rack>
